@@ -1,0 +1,673 @@
+<!DOCTYPE html> 
+<html>
+  <head>
+    <!--META-->
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+    <!--CSS-->
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+    <link rel="stylesheet" href="API/css/themes/default/jquery.mobile.min.css" />
+    <link rel="stylesheet" href="API/js/DataTables/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="API/css/mycss.css" />
+    <link rel="stylesheet" href="css/mycss.css" />
+
+    <!--JS-->
+    <script type="text/javascript" src="include/config.js"></script>
+    <script type="text/javascript" src="API/js/Jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="API/js/JqueryMobile/jquery.mobile.min.js"></script>
+    <script type="text/javascript" src="API/js/DataTables/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="API/js/functionsLib.js"></script>
+    <script type="text/javascript" src="js/fonctions.js"></script>
+
+    <script type="text/javascript">
+    ///////////////////
+    //BLOCK VARIABLE GLOBAL
+    ///////////////////
+    var id_page = 21;
+    var g_id_tournoi;
+    var g_couleurFontBon = "#04B404";
+    var g_couleurFontMauvais = "#FF0000";
+    var g_couleurFontDefaut = "#333333";
+    var g_couleurFontTips = "#a1a1a1";
+    
+    var g_tab_testInputTournoi = new Array();
+    g_tab_testInputTournoi["input_label"]=false;
+
+    ///////////////////
+    //BLOCK FONCTIONS EVENEMENTS
+    ///////////////////
+    //Fin chargement page
+    function OnLoad() {
+        try {
+            g_id_tournoi = $.functionsLib.getParamGet("id_tournoi");
+            
+            chargerTitre(g_id_tournoi);
+            
+            chargerTapis();
+            chargerRounds();
+            chargerRechercheParticipant();
+            chargerParticipants();
+            chargerTournoi();
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(OnLoad):" + er.message);
+        }
+    }
+    
+    function ecoute(p_obj, p_eventCode) {
+        try {
+
+            switch (p_eventCode) 
+            { 
+                case 13: 
+                    onblurInput(p_obj);
+                    break; 
+                default: 
+                    break; 
+            }
+       } catch (er) {
+            $.functionsLib.log(0, "ERROR(ecoute):" + er.message);
+        }
+    }
+
+    function onblurInput(p_obj) {
+        try {
+            $("#tips_"+p_obj.name).text("");
+            
+            switch (p_obj.name) 
+            {
+                case "input_label" : 
+                    var Model=/^[0-9A-Za-z]{1,25}$/g;
+                    var test = p_obj.value.match(Model);
+                    if(test != null){
+                        $("#label_"+p_obj.name).css("color", g_couleurFontBon);
+                        g_tab_testInputTournoi[p_obj.name]=true;
+                        $("#bt_updateTournoi").removeClass('ui-disabled');
+                    }else{
+                        $("#label_"+p_obj.name).css("color", g_couleurFontMauvais);
+                        g_tab_testInputTournoi[p_obj.name]=false;
+                    }
+                    break;
+                    
+                default: 
+                    break; 
+            }
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(checkIntput):" + er.message);
+        }
+    }
+
+    function onfocusInput(p_obj) {
+        try {
+            $("#label_"+p_obj.name).css("color", g_couleurFontDefaut);
+            $("#tips_"+p_obj.name).css("color", g_couleurFontTips);
+            $("#msgRetour").text("");
+
+            switch (p_obj.name) 
+            {
+                case "input_label" :
+                    $("#tips_"+p_obj.name).html("Ho");
+                    break;
+                default: 
+                    break; 
+            }
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(onfocusInput):" + er.message);
+        }
+    }
+    
+    function onChangeInput(p_obj) {
+        try {
+            
+       } catch (er) {
+            $.functionsLib.log(0, "ERROR(onChangeInput):" + er.message);
+        }
+    }
+
+    ///////////////////
+    //BLOCK FONCTIONS METIER
+    ///////////////////
+    /**
+     * chargerTournoi
+     */
+    function chargerTournoi(){
+        try {
+            var tabInput = { table : 'tab_tournois', get : '{"champ":"titre","type":"PARAM_STR"}', filtre : '{"champ":"id","valeur":"'+g_id_tournoi+'","type":"PARAM_INT"}'};
+            var json_retour = $.functionsLib.callRest(domaine+"API/phpsql/getter.php", {}, tabInput);
+            if(json_retour["strErreur"] == ""){
+                $("#input_label").val(json_retour["data"]["resultat"]["champ"]);
+            }else{
+                $.functionsLib.notification("Erreur chargerTournoi : "+json_retour["strErreur"],$.functionsLib.oda_msg_color.ERROR);
+            }  
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(chargerTournoi):" + er.message);
+        }
+    }
+    
+    /**
+     * chargerTapis
+     */
+    function chargerTapis(){
+        try {
+            var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
+            $('#divTapis').html(strhtml);
+            var tabInput = { id_tournois : g_id_tournoi };
+            $.functionsLib.callRest(domaine+"phpsql/mysql_getTapis.php", {functionRetour : vueTapis}, tabInput);   
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(chargerTapis):" + er.message);
+        }
+    }
+    
+    /**
+     * chargerTapis
+     */
+    function chargerRounds(){
+        try {
+            var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
+            $('#divRounds').html(strhtml);
+            var tabInput = { id_tournoi : g_id_tournoi };
+            $.functionsLib.callRest(domaine+"phpsql/mysql_getRounds.php", {functionRetour : vueRounds}, tabInput);
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(chargerRounds):" + er.message);
+        }
+    }
+    
+    /**
+     * chargerRechercheParticipant
+     */
+    function chargerRechercheParticipant(){
+        try {
+            var strHtml = "";
+            strHtml += "<ul id=\"autocomplete_rechParti\" data-role=\"listview\" data-inset=\"true\" data-filter=\"true\" data-filter-placeholder=\"3 lettres au moins...\" data-filter-theme=\"c\"></ul>";
+
+            $('#divRechercheParticipant').html(strHtml).trigger('create');
+
+            $( "#autocomplete_rechParti" ).on( "filterablebeforefilter", function ( e, data ) {
+                var $ul = $( this ),
+                $input = $( data.input ),
+                value = $input.val(),
+                html = "";
+                $ul.html( "" );
+                if ( value && value.length > 2 ) {
+                    $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
+                    $ul.listview( "refresh" );
+                    var tabInput = { recherche : $input.val(), id_tournoi : g_id_tournoi };
+                    var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_getParticipants.php", {}, tabInput);
+                    var dataRetour = json_retour["data"]["resultat"]["data"];
+                    for(var indice in dataRetour){
+                        html += "<li><a href=\"javascript:ajouterParticipant("+dataRetour[indice]["id"]+")\">"+dataRetour[indice]["nom"]+" "+dataRetour[indice]["prenom"]+"</a></li>";
+                    }
+                    $ul.html( html );
+                    $ul.listview( "refresh" );
+                    $ul.trigger( "updatelayout");
+                }
+            });
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(chargerRechercheParticipant):" + er.message);
+        }
+    }
+    
+    /**
+     * ajouterParticipant
+     * 
+     * @param {string} p_id_code_user
+     */
+    function ajouterParticipant(p_id_user){
+        try {
+            var tabInput = { id_user : p_id_user, id_tournoi : g_id_tournoi };
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/addParticipant.php", {}, tabInput);
+            if(json_retour["strErreur"] == ""){
+                chargerParticipants();
+                chargerRechercheParticipant();
+            }else{
+                $.functionsLib.notification("Erreur chargerTournoi : "+json_retour["strErreur"],$.functionsLib.oda_msg_color.ERROR);
+            } 
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(ajouterParticipant):" + er.message);
+        }
+    }
+    
+    /**
+     * chargerParticipants
+     */
+    function chargerParticipants(){
+        try {
+            var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
+            $('#divParticipants').html(strhtml);
+            var tabInput = { id_tournoi : g_id_tournoi };
+            $.functionsLib.callRest(domaine+"phpsql/mysql_getParticipantsTournoi.php", {functionRetour : vueParticipants}, tabInput);   
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(chargerParticipants):" + er.message);
+        }
+    }
+    
+    /**
+     * supprimerParticipant
+     */
+    function supprimerParticipant(p_id_user){
+        try {
+            var tabInput = { id_user : p_id_user, id_tournoi : g_id_tournoi };
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_delParticipant.php", {}, tabInput);
+            if(json_retour["strErreur"] == ""){
+                chargerParticipants();
+                chargerRechercheParticipant();
+            }else{
+                $.functionsLib.notification("Erreur supprimerParticipant : "+json_retour["strErreur"],$.functionsLib.oda_msg_color.ERROR);
+            }
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(supprimerParticipant):" + er.message);
+        }
+    }
+    
+    /**
+     * retirerRevaveParticipant
+     */
+    function retirerRecaveParticipant(p_id_user){
+        try {
+            var tabInput = { id_user : p_id_user, id_tournoi : g_id_tournoi, type : 'recave' };
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/delNewTapisParticipant.php", {}, tabInput);
+            if(json_retour["strErreur"] == ""){
+                chargerParticipants();
+            }else{
+                $.functionsLib.notification("Erreur chargerTournoi : "+json_retour["strErreur"],$.functionsLib.oda_msg_color.ERROR);
+            } 
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(retirerRecaveParticipant):" + er.message);
+        }
+    }
+    
+    /**
+     * retirerAddonParticipant
+     */
+    function retirerAddonParticipant(p_id_user){
+        try {
+            var tabInput = { id_user : p_id_user, id_tournoi : g_id_tournoi, type : 'addon' };
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/delNewTapisParticipant.php", {}, tabInput);
+            if(json_retour["strErreur"] == ""){
+                chargerParticipants();
+            }else{
+                $.functionsLib.notification("Erreur chargerTournoi : "+json_retour["strErreur"],$.functionsLib.oda_msg_color.ERROR);
+            }  
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(retirerAddonParticipant):" + er.message);
+        }
+    }
+    
+    /**
+     * revenirParticipant
+     * 
+     * @param {array} p_id_user
+     */
+    function revenirParticipant(p_id_user){
+        try {
+            var tabInput = { id_user : p_id_user, id_tournoi : g_id_tournoi };
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_inParticipant.php", {}, tabInput);
+            if(json_retour["strErreur"] == ""){
+                chargerParticipants();
+            }else{
+                $.functionsLib.notification("Erreur revenirParticipant : "+json_retour["strErreur"],$.functionsLib.oda_msg_color.ERROR);
+            }
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(revenirParticipant):" + er.message);
+        }
+    }
+    
+    /**
+     * reinit
+     * 
+     */
+    function reinit(){
+        try {
+            var tabInput = { action : 'reinit', id_tournoi : g_id_tournoi };
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/actionDecompte.php", {}, tabInput);
+            if(json_retour["strErreur"] == ""){
+                $.functionsLib.notification("Reset r&eacute;ussi.",$.functionsLib.oda_msg_color.SUCCES);
+            }else{
+                $.functionsLib.notification("Erreur revenirParticipant : "+json_retour["strErreur"],$.functionsLib.oda_msg_color.ERROR);
+            }
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(reinit):" + er.message);
+        }
+    }
+    
+    /**
+     * updateTournoi
+     */
+    function updateTournoi(){
+        try {
+            var strLabel = $("#input_label").val();
+            
+            var controle = false;
+            
+            var list_champs = new Array("input_label");
+            
+            for(var indice in list_champs){
+                if(g_tab_testInputTournoi[list_champs[indice]]){
+                    controle = true;
+                    break;
+                }
+            }
+            
+            if(controle){
+                var tabInput = { table : 'tab_tournois', set : '{"champ":"titre","valeur":"'+strLabel+'","type":"PARAM_STR"}', filtre : '{"champ":"id","valeur":"'+g_id_tournoi+'","type":"PARAM_INT"}'};
+                var json_retour = $.functionsLib.callRest(domaine+"API/phpsql/setter.php", {}, tabInput);
+                if(json_retour["strErreur"] == ""){
+                    $.functionsLib.notification("Mise &agrave; jour r&eacute;ussi.",$.functionsLib.oda_msg_color.SUCCES);
+                    $("#bt_updateTournoi").addClass('ui-disabled');
+                    for(var indice in list_champs){
+                        g_tab_testInputTournoi[list_champs[indice]] = false;
+                    }
+                }else{
+                    $.functionsLib.notification("Erreur updateTournoi : "+json_retour["strErreur"],$.functionsLib.oda_msg_color.ERROR);
+                }
+            }else{
+                $.functionsLib.notification("Soumission impossible.",$.functionsLib.oda_msg_color.ERROR);
+            }
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(updateTournoi):" + er.message);
+        }
+    }
+    
+    ///////////////////
+    //BLOCK FONCTIONS AFFICHAGE
+    ///////////////////
+    /**
+     * vueTapis
+     * 
+     * @param {array} p_retour   
+     */
+    function vueTapis(p_retour){
+        try {
+            var objDataTable = $.functionsLib.objDataTableFromJsonArray(p_retour["data"]["resultat"]["data"]);
+            
+            var strhtml = "";
+            strhtml += '<table cellpadding="0" cellspacing="0" border="0" class="display" id="tableauTapis"></table>';
+            $('#divTapis').html(strhtml).trigger('create');
+            
+            var oTable = $('#tableauTapis').dataTable( {
+                "sPaginationType": "full_numbers",
+                "aaData": objDataTable.data,
+                "aaSorting": [[0,'asc']],
+                "aoColumns": [
+                    { "sTitle": "Valeur du jeton","sClass": "center" },
+                    { "sTitle": "Nombre de jeton","sClass": "center" },
+                    { "sTitle": "Total","sClass": "center" }
+                ],
+                "aoColumnDefs": [
+                    {
+                        "mRender": function ( data, type, row ) {
+                            var value = "";
+                            if((row[objDataTable.entete["valeur_jeton"]]!=0)&&(row[objDataTable.entete["valeur_jeton"]]!=9999)){
+                                value = row[objDataTable.entete["valeur_jeton"]];
+                            }
+                            return value;
+                        },
+                        "aTargets": [ 0 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            var value = "";
+                            if((row[objDataTable.entete["nb_jeton"]]!=0)&&(row[objDataTable.entete["nb_jeton"]]!=9999)){
+                                value = row[objDataTable.entete["nb_jeton"]];
+                            }
+                            return value;
+                        },
+                        "aTargets": [ 1 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            var value = "";
+                            if((row[objDataTable.entete["valeur_jeton"]]!=0)&&(row[objDataTable.entete["valeur_jeton"]]!=9999)
+                                &&(row[objDataTable.entete["nb_jeton"]]!=0)&&(row[objDataTable.entete["nb_jeton"]]!=9999)
+                            ){
+                                value = parseInt(row[objDataTable.entete["valeur_jeton"]])*parseInt(row[objDataTable.entete["nb_jeton"]]);
+                            }
+                            
+                            return (value);
+                        },
+                        "aTargets": [ 2 ]
+                    }
+                ]
+            });
+            
+            var tabInput = { id_tournois : g_id_tournoi };
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_getValeurTapis.php", {}, tabInput);
+            if(json_retour["strErreur"] == ""){
+                $("#totalJeton").html("<b>Valeur du tapis : "+json_retour["data"]["resultat"]["valeurTapis"]+" Jetons</b>");
+            }else{
+                $.functionsLib.notification("Erreur vueTapis : "+json_retour["strErreur"],$.functionsLib.oda_msg_color.ERROR);
+            }
+        }
+        catch (er) {
+            $.functionsLib.log(0, "ERROR(vueTapis):" + er.message);
+        }
+    }
+    
+    /**
+     * vueTapis
+     * 
+     * @param {array} p_retour   
+     */
+    function vueRounds(p_retour){
+        try {
+            var objDataTable = $.functionsLib.objDataTableFromJsonArray(p_retour["data"]["resultat"]["data"]);
+            
+            var strhtml = "";
+            strhtml += '<table cellpadding="0" cellspacing="0" border="0" class="display" id="tableauRounds"></table>';
+            $('#divRounds').html(strhtml).trigger('create');
+            
+            var oTable = $('#tableauRounds').dataTable( {
+                "sPaginationType": "full_numbers",
+                "aaData": objDataTable.data,
+                "aaSorting": [[1,'asc']],
+                "aoColumns": [
+                    { "sTitle": "Temps","sClass": "center" },
+                    { "sTitle": "Small blind","sClass": "center" },
+                    { "sTitle": "Big blind","sClass": "center" },
+                    { "sTitle": "Ante","sClass": "center" }
+                ],
+                "aoColumnDefs": [
+                    {
+                        "mRender": function ( data, type, row ) {
+                            var value = "";
+                            value = row[objDataTable.entete["temps"]];
+                            return value;
+                        },
+                        "aTargets": [ 0 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            var value = "";
+                            value = row[objDataTable.entete["small_blind"]];
+                            return value;
+                        },
+                        "aTargets": [ 1 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            var value = "";
+                            value = row[objDataTable.entete["big_blind"]];
+                            return (value);
+                        },
+                        "aTargets": [ 2 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            var value = "";
+                            if(row[objDataTable.entete["ante"]]!=0){
+                                value = row[objDataTable.entete["ante"]];
+                            }
+                            return (value);
+                        },
+                        "aTargets": [ 3 ]
+                    }
+                ]
+            });
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(vueRounds):" + er.message);
+        }
+    }
+    
+    /**
+     * vueTapis
+     * 
+     * @param {array} p_retour   
+     */
+    function vueParticipants(p_retour){
+        try {
+            var strHtml = "";
+            
+            var dataRetour = p_retour["data"]["resultat"]["data"];
+            
+            for(var indice in dataRetour){
+                strHtml += "<div data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\">";
+                strHtml += "<a href=\"#\" data-role=\"button\">"+dataRetour[indice]["nom"]+" "+dataRetour[indice]["prenom"]+"</a>";
+                if(dataRetour[indice]["fin"] != "0000-00-00 00:00:00"){
+                    strHtml += "<a href=\"javascript:revenirParticipant('"+dataRetour[indice]["id"]+"');\" data-role=\"button\" data-iconpos=\"notext\" data-icon=\"refresh\">Revenir</a>";
+                }
+                if(dataRetour[indice]["nb_recave"] != "0"){
+                    strHtml += "<a href=\"javascript:retirerRecaveParticipant('"+dataRetour[indice]["id"]+"');\" data-role=\"button\" data-iconpos=\"notext\" data-icon=\"forward\">retirer recave</a>";
+                }
+                if(dataRetour[indice]["nb_addon"] != "0"){
+                    strHtml += "<a href=\"javascript:retirerAddonParticipant('"+dataRetour[indice]["id"]+"');\" data-role=\"button\" data-iconpos=\"notext\" data-icon=\"minus\">retirer addon</a>";
+                }
+                strHtml += "<a href=\"javascript:supprimerParticipant('"+dataRetour[indice]["id"]+"');\" data-role=\"button\" data-iconpos=\"notext\" data-icon=\"delete\">Supprimer</a>";
+                strHtml += "</div>";
+            }
+            
+            $('#divParticipants').html(strHtml).trigger('create');
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(vueParticipants):" + er.message);
+        }
+    }
+    
+</script>
+
+</head>
+<body onload="OnLoad();">
+
+    <!-- page -->
+    <div data-role="page" data-title="Titre">
+
+        <!-- /panel -->
+        <div data-role="panel" id="mypanel" data-display="overlay" data-position="left">
+
+        </div>
+        <!-- /panel -->
+
+        <!-- header -->
+        <div data-role="header" data-position="fixed">
+            <a href="#mypanel" data-role="button" data-icon="home" data-iconpos="notext">home</a>
+            <h1 id="id_titre">titre</h1>
+            <a href="javascript:window.location = ('./api_page_contact.html?mili='+$.functionsLib.getMilise());" data-role="button" data-icon="info" data-iconpos="notext">Contact</a>
+        </div>
+        <!-- /header -->
+         
+        <!-- navbar -->
+        <div data-role="navbar" data-grid="c">
+            <ul>
+                <li><a href="#" class="ui-btn-active ui-state-persist">Param&egrave;trage</a></li>
+                <li><a href="javascript:window.location = ('./page_tournoi_live.html?mili='+$.functionsLib.getMilise()+'&id_tournoi='+getIdtournoi());">Live</a></li>
+                <li><a href="javascript:window.location = ('./page_tournoi_histo.html?mili='+$.functionsLib.getMilise()+'&id_tournoi='+getIdtournoi());">Historique</a></li>
+                <li><a href="javascript:window.location = ('./page_tournoi_rules.html?mili='+$.functionsLib.getMilise()+'&id_tournoi='+getIdtournoi());">R&egrave;gles</a></li>
+            </ul>
+        </div>
+        <!-- /navbar -->
+
+        <!-- content -->
+        <div data-role="content" id="main_content">
+            <div data-role="collapsible" data-collapsed="false" data-mini="true">
+                <h4>Les participants</h4>
+                <fieldset class="ui-grid-b">
+                    <div class="ui-block-a" style="width: 25%;">
+                        <div id="divRechercheParticipant"></div>
+                    </div>
+                    <div class="ui-block-b" style="width: 5%;">
+                        
+                    </div>
+                    <div class="ui-block-c">
+                        <div id="divParticipants"></div>
+                    </div>
+                </fieldset>
+                <br>
+                <div id="msgRetour"></div>
+            </div>
+            
+            <div data-role="collapsible" data-collapsed="false" data-mini="true">
+                <h4>Le tournoi</h4>
+                <div class="ui-grid-d ui-responsive">
+                    <div class="ui-block-a">
+                        <div class="ui-bar ui-bar-d">
+                            <label for="input_label" id="label_input_label"><b>Label :</b></label>    
+                        </div>
+                    </div>
+                    <div class="ui-block-b">
+                        &nbsp;
+                    </div>
+                    <div class="ui-block-c">
+                        &nbsp;
+                    </div>
+                    <div class="ui-block-d">
+                        &nbsp;
+                    </div>
+                    <div class="ui-block-e">
+                        &nbsp;
+                    </div>
+                    <div class="ui-block-a">
+                        <div class="ui-bar ui-bar-c" style="min-height:50px;">
+                            <div id="div_input_label">
+                                <input type="text" name="input_label" id="input_label" onkeyup="ecoute(this, event.keyCode);" onblur="onblurInput(this);" onfocus="onfocusInput(this);">
+                                <label id="tips_input_label"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-block-b">
+                        &nbsp;
+                    </div>
+                    <div class="ui-block-c">
+                        &nbsp;
+                    </div>
+                    <div class="ui-block-d">
+                        &nbsp;
+                    </div>
+                    <div class="ui-block-e">
+                        &nbsp;
+                    </div>
+                </div>
+                <a id="bt_updateTournoi" data-inline="true" data-role="button" data-icon="check" href="javascript:updateTournoi();" data-mini="true" class="ui-disabled">Mise &agrave; jour</a>
+                <br>
+                <a data-inline="true" data-role="button" data-icon="refresh" href="javascript:reinit();" data-mini="true">Reprise du tournois &agrave; z&eacute;ro</a>
+                <br>
+                <div id="msgRetourTournoi"></div>
+            </div>
+            
+            <div data-role="collapsible" data-collapsed="false" data-mini="true">
+                <h4>Les tapis</h4>
+                <div id="divTapis"></div>
+                <br>
+                <br>
+                <div id="totalJeton" style="font-weight:bold;"></div>
+            </div>
+            
+            <div data-role="collapsible" data-collapsed="false" data-mini="true">
+                <h4>Les rounds</h4>
+                <div id="divRounds"></div>
+            </div>
+        </div>
+        <!-- /content -->
+
+        <!-- footer -->
+        <div data-role="footer" data-position="fixed">
+            <a data-role="button" data-icon="search" data-iconpos="notext" class="ui-btn-left" href="javascript:window.location = ('./api_page_faq.html?mili='+$.functionsLib.getMilise());">FAQ</a>
+            <h1 id="id_affichageUser">User</h1>
+            <a data-role="button" data-icon="delete" data-iconpos="notext" class="ui-btn-right" href="javascript:window.location = ('./api_page_sortie.html?mili='+$.functionsLib.getMilise());">Logout</a>
+        </div>
+        <!-- /footer -->
+
+    </div>
+    <!-- /page -->
+</body>
+</html>

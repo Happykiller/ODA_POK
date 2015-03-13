@@ -1,0 +1,260 @@
+<!DOCTYPE html> 
+<html>
+  <head>
+    <!--META-->
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+    <!--CSS-->
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+    <link rel="stylesheet" href="API/css/themes/default/jquery.mobile.min.css" />
+    <link rel="stylesheet" href="API/js/DataTables/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="API/css/mycss.css" />
+    <link rel="stylesheet" href="css/mycss.css" />
+
+    <!--JS-->
+    <script type="text/javascript" src="include/config.js"></script>
+    <script type="text/javascript" src="API/js/Jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="API/js/JqueryMobile/jquery.mobile.min.js"></script>
+    <script type="text/javascript" src="API/js/DataTables/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="API/js/functionsLib.js"></script>
+    <script type="text/javascript" src="js/fonctions.js"></script>
+
+    <script type="text/javascript">
+    ///////////////////
+    //BLOCK VARIABLE GLOBAL
+    ///////////////////
+    var id_page = 1;
+
+    ///////////////////
+    //BLOCK FONCTIONS EVENEMENTS
+    ///////////////////
+    //Fin chargement page
+    function OnLoad() {
+        try {
+            chargerTournoisEnCours();
+            chargerTournoisFini();
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(OnLoad):" + er.message);
+        }
+    }
+
+    ///////////////////
+    //BLOCK FONCTIONS METIER
+    ///////////////////
+    /**
+     * chargerTournoisEnCours
+     * 
+     */
+    function chargerTournoisEnCours() {
+        try {
+            var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
+            $('#inventaireTournoisEnCours').html(strhtml);
+            var tabInput = { auteur : "", fini : "non" };
+            $.functionsLib.callRest(domaine+"phpsql/mysql_getTournois.php", {functionRetour : vueTournoisEnCours}, tabInput);            
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(chargerTournoisEnCours):" + er.message);
+        }
+    }
+    
+    /**
+     * chargerTournoisFini
+     * 
+     */
+    function chargerTournoisFini() {
+        try {
+            var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
+            $('#inventaireTournoisFini').html(strhtml);
+            var tabInput = { auteur : "", fini : "oui" };
+            $.functionsLib.callRest(domaine+"phpsql/mysql_getTournois.php", {functionRetour : vueTournoisFini}, tabInput);            
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(chargerTournoisFini):" + er.message);
+        }
+    }
+    
+    ///////////////////
+    //BLOCK FONCTIONS AFFICHAGE
+    ///////////////////
+    function vueTournoisEnCours(p_retour){
+        try {
+            var objDataTable = $.functionsLib.objDataTableFromJsonArray(p_retour["data"]["resultat"]["data"]);
+            
+            var strhtml = "";
+            strhtml += '<table cellpadding="0" cellspacing="0" border="0" class="display" id="tableauTournoisEnCours"></table>';
+            $('#inventaireTournoisEnCours').html(strhtml).trigger('create');
+            
+            var oTable = $('#tableauTournoisEnCours').dataTable( {
+                "sPaginationType": "full_numbers",
+                "aaData": objDataTable.data,
+                "aaSorting": [[1,'desc']],
+                "aoColumns": [
+                    { "sTitle": "Id","sClass": "center" },
+                    { "sTitle": "Titre","sClass": "center" },
+                    { "sTitle": "Date Création","sClass": "center" },
+                    { "sTitle": "Date Début","sClass": "center" },
+                    { "sTitle": "Auteur","sClass": "center" }
+                ],
+                "aoColumnDefs": [
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["id"]];
+                        },
+                        "aTargets": [ 0 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return '<a target="_top" href="page_tournoi_param.html?&id_tournoi='+row[objDataTable.entete["id"]]+'&mili='+$.functionsLib.getMilise()+'">'+row[objDataTable.entete["titre"]]+'</a>';
+                        },
+                        "aTargets": [ 1 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["dateCreation"]];
+                        },
+                        "aTargets": [ 2 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["dateDebut"]];
+                        },
+                        "aTargets": [ 3 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["auteur"]];
+                        },
+                        "aTargets": [ 4 ]
+                    }
+                ]
+            });
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(vueTournoisEnCours):" + er.message);
+        }
+    }
+    
+    
+    function vueTournoisFini(p_retour){
+        try {
+            var objDataTable = $.functionsLib.objDataTableFromJsonArray(p_retour["data"]["resultat"]["data"]);
+            
+            var strhtml = "";
+            strhtml += '<table cellpadding="0" cellspacing="0" border="0" class="display" id="tableauTournoisFini"></table>';
+            $('#inventaireTournoisFini').html(strhtml).trigger('create');
+            
+            var oTable = $('#tableauTournoisFini').dataTable( {
+                "sPaginationType": "full_numbers",
+                "aaData": objDataTable.data,
+                "aaSorting": [[1,'desc']],
+                "aoColumns": [
+                    { "sTitle": "Id","sClass": "center" },
+                    { "sTitle": "Titre","sClass": "center" },
+                    { "sTitle": "Date Début","sClass": "center" },
+                    { "sTitle": "Date Fin","sClass": "center" },
+                    { "sTitle": "Auteur","sClass": "center" }
+                ],
+                "aoColumnDefs": [
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["id"]];
+                        },
+                        "aTargets": [ 0 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return '<a target="_top" href="page_tournoi_param.html?&id_tournoi='+row[objDataTable.entete["id"]]+'&mili='+$.functionsLib.getMilise()+'">'+row[objDataTable.entete["titre"]]+'</a>';
+                        },
+                        "aTargets": [ 1 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["dateDebut"]];
+                        },
+                        "aTargets": [ 2 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["dateFin"]];
+                        },
+                        "aTargets": [ 3 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["auteur"]];
+                        },
+                        "aTargets": [ 4 ]
+                    }
+                ]
+            });
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(vueTournoisFini):" + er.message);
+        }
+    }
+    
+</script>
+
+</head>
+<body onload="OnLoad();">
+
+    <!-- page -->
+    <div data-role="page" data-title="Titre">
+
+        <!-- /panel -->
+        <div data-role="panel" id="mypanel" data-display="overlay" data-position="left">
+
+        </div>
+        <!-- /panel -->
+
+        <!-- header -->
+        <div data-role="header" data-position="fixed">
+            <a href="#mypanel" data-role="button" data-icon="home" data-iconpos="notext">home</a>
+            <h1 id="id_titre">titre</h1>
+            <a href="javascript:window.location = ('./api_page_contact.html?mili='+$.functionsLib.getMilise());" data-role="button" data-icon="info" data-iconpos="notext">Contact</a>
+        </div>
+        <!-- /header -->
+
+        <!-- content -->
+        <div data-role="content" id="main_content">
+            <center>
+            <div class="ui-grid-b ui-responsive" style="width:80%">
+                <div class="ui-block-a" style="text-align:center">
+                    <img src="img/carre_150.png" border="0">
+                </div>
+                <div class="ui-block-b" style="text-align:center">
+                    <h4>Bienvenue</h4>
+                    <h1>Happy's Poker</h1>
+                </div>
+                <div class="ui-block-c" style="text-align:center">
+                    <img src="img/carre_150.png" border="0">
+                </div>
+            </div>
+            <center>
+            
+            <div data-role="collapsible" data-collapsed="false" data-mini="true">
+                <h4>Les tournois en cours</h4>
+                <div id="inventaireTournoisEnCours"></div>
+                <br>
+            </div>
+                
+            <div data-role="collapsible" data-collapsed="false" data-mini="true">
+                <h4>Les tournois finis</h4>
+                <div id="inventaireTournoisFini"></div>
+                <br>
+            </div>
+        </div>
+        <!-- /content -->
+
+        <!-- footer -->
+        <div data-role="footer" data-position="fixed">
+            <a data-role="button" data-icon="search" data-iconpos="notext" class="ui-btn-left" href="javascript:window.location = ('./api_page_faq.html?mili='+$.functionsLib.getMilise());">FAQ</a>
+            <h1 id="id_affichageUser">User</h1>
+            <a data-role="button" data-icon="delete" data-iconpos="notext" class="ui-btn-right" href="javascript:window.location = ('./api_page_sortie.html?mili='+$.functionsLib.getMilise());">Logout</a>
+        </div>
+        <!-- /footer -->
+
+    </div>
+    <!-- /page -->
+</body>
+</html>

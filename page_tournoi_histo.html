@@ -1,0 +1,189 @@
+<!DOCTYPE html> 
+<html>
+  <head>
+    <!--META-->
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+    <!--CSS-->
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+    <link rel="stylesheet" href="API/css/themes/default/jquery.mobile.min.css" />
+    <link rel="stylesheet" href="API/js/DataTables/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="API/css/mycss.css" />
+    <link rel="stylesheet" href="css/mycss.css" />
+
+    <!--JS-->
+    <script type="text/javascript" src="include/config.js"></script>
+    <script type="text/javascript" src="API/js/Jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="API/js/JqueryMobile/jquery.mobile.min.js"></script>
+    <script type="text/javascript" src="API/js/DataTables/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="API/js/functionsLib.js"></script>
+    <script type="text/javascript" src="js/fonctions.js"></script>
+
+    <script type="text/javascript">
+    ///////////////////
+    //BLOCK VARIABLE GLOBAL
+    ///////////////////
+    var id_page = 23;
+    var g_id_tournoi;
+    var g_couleurFontBon = "#04B404";
+    var g_couleurFontMauvais = "#FF0000";
+    var g_couleurFontDefaut = "#333333";
+    var g_couleurFontTips = "#a1a1a1";
+
+    ///////////////////
+    //BLOCK FONCTIONS EVENEMENTS
+    ///////////////////
+    //Fin chargement page
+    function OnLoad() {
+        try {
+            g_id_tournoi = $.functionsLib.getParamGet("id_tournoi");
+            
+            chargerTitre(g_id_tournoi);
+            
+            chargerClassement();
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(OnLoad):" + er.message);
+        }
+    }
+
+    ///////////////////
+    //BLOCK FONCTIONS METIER
+    ///////////////////
+    /**
+     * chargerClassement
+     */
+    function chargerClassement(){
+        try {
+            var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
+            $('#divClassement').html(strhtml);
+            var tabInput = { id_tournoi : g_id_tournoi };
+            $.functionsLib.callRest(domaine+"phpsql/mysql_getHisto.php", {functionRetour : vueClassement}, tabInput);            
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(chargerClassement):" + er.message);
+        }
+    }
+    
+    ///////////////////
+    //BLOCK FONCTIONS AFFICHAGE
+    ///////////////////
+    /**
+     * vueTournoisEnCours
+     * 
+     * @param {array} p_retour
+     */
+    function vueClassement(p_retour){
+        try {
+            var objDataTable = $.functionsLib.objDataTableFromJsonArray(p_retour["data"]["resultat"]["data"]);
+            
+            var strhtml = "";
+            strhtml += '<table cellpadding="0" cellspacing="0" border="0" class="display" id="tableauClassement"></table>';
+            $('#divClassement').html(strhtml).trigger('create');
+            
+            var oTable = $('#tableauClassement').dataTable( {
+                "sPaginationType": "full_numbers",
+                "aaData": objDataTable.data,
+                "aaSorting": [[0,'asc']],
+                "aoColumns": [
+                    { "sTitle": "Place","sClass": "center" },
+                    { "sTitle": "Nom","sClass": "center" },
+                    { "sTitle": "Prénom","sClass": "center" },
+                    { "sTitle": "Fin","sClass": "center" },
+                    { "sTitle": "Round final","sClass": "center" }
+                ],
+                "aoColumnDefs": [
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["place"]];
+                        },
+                        "aTargets": [ 0 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["nom"]];
+                        },
+                        "aTargets": [ 1 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["prenom"]];
+                        },
+                        "aTargets": [ 2 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["fin"]];
+                        },
+                        "aTargets": [ 3 ]
+                    },
+                    {
+                        "mRender": function ( data, type, row ) {
+                            return row[objDataTable.entete["roundFin"]];
+                        },
+                        "aTargets": [ 4 ]
+                    }
+                ]
+            });
+        } catch (er) {
+            $.functionsLib.log(0, "ERROR(vueTournoisEnCours):" + er.message);
+        }
+    }
+    
+</script>
+
+</head>
+<body onload="OnLoad();">
+
+    <!-- page -->
+    <div data-role="page" data-title="Titre">
+
+        <!-- /panel -->
+        <div data-role="panel" id="mypanel" data-display="overlay" data-position="left">
+
+        </div>
+        <!-- /panel -->
+
+        <!-- header -->
+        <div data-role="header" data-position="fixed">
+            <a href="#mypanel" data-role="button" data-icon="home" data-iconpos="notext">home</a>
+            <h1 id="id_titre">titre</h1>
+            <a href="javascript:window.location = ('./api_page_contact.html?mili='+$.functionsLib.getMilise());" data-role="button" data-icon="info" data-iconpos="notext">Contact</a>
+        </div>
+        <!-- /header -->
+         
+        <!-- navbar -->
+        <div data-role="navbar" data-grid="c">
+            <ul>
+                <li><a href="javascript:window.location = ('./page_tournoi_param.html?mili='+$.functionsLib.getMilise()+'&id_tournoi='+getIdtournoi());">Param&egrave;trage</a></li>
+                <li><a href="javascript:window.location = ('./page_tournoi_live.html?mili='+$.functionsLib.getMilise()+'&id_tournoi='+getIdtournoi());">Live</a></li>
+                <li><a href="#" class="ui-btn-active ui-state-persist">Historique</a></li>
+                <li><a href="javascript:window.location = ('./page_tournoi_rules.html?mili='+$.functionsLib.getMilise()+'&id_tournoi='+getIdtournoi());">R&egrave;gles</a></li>
+            </ul>
+        </div>
+        <!-- /navbar -->
+
+        <!-- content -->
+        <div data-role="content" id="main_content">
+            <div data-role="collapsible" data-collapsed="false" data-mini="true">
+                <h4>Le classements</h4>
+                <div id="divClassement"></div>
+                <label>.</label>
+            </div>
+        </div>
+        <!-- /content -->
+
+        <!-- footer -->
+        <div data-role="footer" data-position="fixed">
+            <a data-role="button" data-icon="search" data-iconpos="notext" class="ui-btn-left" href="javascript:window.location = ('./api_page_faq.html?mili='+$.functionsLib.getMilise());">FAQ</a>
+            <h1 id="id_affichageUser">User</h1>
+            <a data-role="button" data-icon="delete" data-iconpos="notext" class="ui-btn-right" href="javascript:window.location = ('./api_page_sortie.html?mili='+$.functionsLib.getMilise());">Logout</a>
+        </div>
+        <!-- /footer -->
+
+    </div>
+    <!-- /page -->
+</body>
+</html>
