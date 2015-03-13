@@ -25,7 +25,7 @@
     ///////////////////
     //BLOCK VARIABLE GLOBAL
     ///////////////////
-    var id_page = 22;
+    var id_page = 72;
     var g_id_tournoi;
     var g_couleurFontBon = "#04B404";
     var g_couleurFontMauvais = "#FF0000";
@@ -71,7 +71,7 @@
     function chargerParticipants(){
         try {
             var tabInput = { id_tournoi : g_id_tournoi };
-            var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_getParticipantsTournoi.php", {}, tabInput);
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/getParticipantsTournoi.php", {}, tabInput);
             var dataRetour = json_retour["data"]["resultat"]["data"];
             for(var indice in dataRetour){
                 var strHtmlDisable = "";
@@ -103,7 +103,7 @@
     function chargerInfos(){
         try {
             var tabInput = { id_tournoi : g_id_tournoi };
-            var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_getInfosLive.php", {}, tabInput);
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/getInfosLive.php", {}, tabInput);
             
             var dateTimeDepart = json_retour["data"]["strSebutDecompte"];
             var intRestantSeconde = parseInt(json_retour["data"]["strTempsRestantSeconde"]);
@@ -198,7 +198,7 @@
     function sortirParticipant(p_id_user){
         try {
             var tabInput = { id_user : p_id_user, id_tournoi : g_id_tournoi };
-             var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_outParticipant.php", {}, tabInput);
+             var json_retour = $.functionsLib.callRest(domaine+"phpsql/outParticipant.php", {}, tabInput);
             if(json_retour["strErreur"] == ""){
                 chargerParticipants();
                 chargerInfos();
@@ -219,7 +219,7 @@
     function recaveParticipant(p_id_user){
         try {
             var tabInput = { id_user : p_id_user, id_tournoi : g_id_tournoi, type : 'recave' };
-            var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_tapisParticipant.php", {}, tabInput);
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/tapisParticipant.php", {}, tabInput);
             if(json_retour["strErreur"] == ""){
                 chargerParticipants();
                 chargerInfos();
@@ -240,7 +240,7 @@
     function addonParticipant(p_id_user){
         try {
             var tabInput = { id_user : p_id_user, id_tournoi : g_id_tournoi, type : 'addon' };
-            var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_tapisParticipant.php", {}, tabInput);
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/tapisParticipant.php", {}, tabInput);
             if(json_retour["strErreur"] == ""){
                 chargerParticipants();
                 chargerInfos();

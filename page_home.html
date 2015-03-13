@@ -54,7 +54,7 @@
             var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
             $('#inventaireTournoisEnCours').html(strhtml);
             var tabInput = { auteur : "", fini : "non" };
-            $.functionsLib.callRest(domaine+"phpsql/mysql_getTournois.php", {functionRetour : vueTournoisEnCours}, tabInput);            
+            $.functionsLib.callRest(domaine+"phpsql/getTournois.php", {functionRetour : vueTournoisEnCours}, tabInput);            
         } catch (er) {
             $.functionsLib.log(0, "ERROR(chargerTournoisEnCours):" + er.message);
         }
@@ -69,7 +69,7 @@
             var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
             $('#inventaireTournoisFini').html(strhtml);
             var tabInput = { auteur : "", fini : "oui" };
-            $.functionsLib.callRest(domaine+"phpsql/mysql_getTournois.php", {functionRetour : vueTournoisFini}, tabInput);            
+            $.functionsLib.callRest(domaine+"phpsql/getTournois.php", {functionRetour : vueTournoisFini}, tabInput);            
         } catch (er) {
             $.functionsLib.log(0, "ERROR(chargerTournoisFini):" + er.message);
         }

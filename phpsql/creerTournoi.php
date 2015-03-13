@@ -28,6 +28,7 @@ $params->bindsValue = [
 ];
 $params->typeSQL = OdaLibBd::SQL_INSERT_ONE;
 $retour = $INTERFACE->BD_ENGINE->reqODASQL($params);
+$idTournoi = $retour->data;
 
 $params = new stdClass();
 $params->label = "resultat";

@@ -24,7 +24,7 @@
     ///////////////////
     //BLOCK VARIABLE GLOBAL
     ///////////////////
-    var id_page = 20;
+    var id_page = 70;
     
     var g_tab_testInput = new Array(); 
     g_tab_testInput["titre"]=false; 
@@ -155,7 +155,7 @@
             var tabInput = { code_user : $.functionsLib.getUserInfo().code_user, titre : p_titre };
             var json_retour = $.functionsLib.callRest(domaine+"phpsql/creerTournoi.php", {}, tabInput);
             if(json_retour["strErreur"] == ""){
-                $.functionsLib.notification("Le tounoi n&deg;"+json_retour["data"]["resultat"]["id"]+" a bien &eacute;t&eacute; cr&eacute;&eacute;",$.functionsLib.oda_msg_color.SUCCES);
+                $.functionsLib.notification("Le tounoi n&deg;"+json_retour["data"]["resultat"]+" a bien &eacute;t&eacute; cr&eacute;&eacute;",$.functionsLib.oda_msg_color.SUCCES);
             }else{
                 $.functionsLib.notification("Erreur pendant la cr&eacute;ation du tournoi.("+json_retour["strErreur"]+")",$.functionsLib.oda_msg_color.ERROR);
             }

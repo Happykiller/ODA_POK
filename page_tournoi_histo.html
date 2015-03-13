@@ -27,7 +27,7 @@
     ///////////////////
     //BLOCK VARIABLE GLOBAL
     ///////////////////
-    var id_page = 23;
+    var id_page = 73;
     var g_id_tournoi;
     var g_couleurFontBon = "#04B404";
     var g_couleurFontMauvais = "#FF0000";
@@ -61,7 +61,7 @@
             var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
             $('#divClassement').html(strhtml);
             var tabInput = { id_tournoi : g_id_tournoi };
-            $.functionsLib.callRest(domaine+"phpsql/mysql_getHisto.php", {functionRetour : vueClassement}, tabInput);            
+            $.functionsLib.callRest(domaine+"phpsql/getHisto.php", {functionRetour : vueClassement}, tabInput);            
         } catch (er) {
             $.functionsLib.log(0, "ERROR(chargerClassement):" + er.message);
         }

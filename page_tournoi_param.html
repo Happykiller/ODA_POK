@@ -27,7 +27,7 @@
     ///////////////////
     //BLOCK VARIABLE GLOBAL
     ///////////////////
-    var id_page = 21;
+    var id_page = 71;
     var g_id_tournoi;
     var g_couleurFontBon = "#04B404";
     var g_couleurFontMauvais = "#FF0000";
@@ -155,7 +155,7 @@
             var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
             $('#divTapis').html(strhtml);
             var tabInput = { id_tournois : g_id_tournoi };
-            $.functionsLib.callRest(domaine+"phpsql/mysql_getTapis.php", {functionRetour : vueTapis}, tabInput);   
+            $.functionsLib.callRest(domaine+"phpsql/getTapis.php", {functionRetour : vueTapis}, tabInput);   
         } catch (er) {
             $.functionsLib.log(0, "ERROR(chargerTapis):" + er.message);
         }
@@ -169,7 +169,7 @@
             var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
             $('#divRounds').html(strhtml);
             var tabInput = { id_tournoi : g_id_tournoi };
-            $.functionsLib.callRest(domaine+"phpsql/mysql_getRounds.php", {functionRetour : vueRounds}, tabInput);
+            $.functionsLib.callRest(domaine+"phpsql/getRounds.php", {functionRetour : vueRounds}, tabInput);
         } catch (er) {
             $.functionsLib.log(0, "ERROR(chargerRounds):" + er.message);
         }
@@ -195,7 +195,7 @@
                     $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
                     $ul.listview( "refresh" );
                     var tabInput = { recherche : $input.val(), id_tournoi : g_id_tournoi };
-                    var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_getParticipants.php", {}, tabInput);
+                    var json_retour = $.functionsLib.callRest(domaine+"phpsql/getParticipants.php", {}, tabInput);
                     var dataRetour = json_retour["data"]["resultat"]["data"];
                     for(var indice in dataRetour){
                         html += "<li><a href=\"javascript:ajouterParticipant("+dataRetour[indice]["id"]+")\">"+dataRetour[indice]["nom"]+" "+dataRetour[indice]["prenom"]+"</a></li>";
@@ -238,7 +238,7 @@
             var strhtml = "<IMG SRC=\"API/img/loading.gif\" ALT=\"Chargement\" TITLE=\"Chargement\">";
             $('#divParticipants').html(strhtml);
             var tabInput = { id_tournoi : g_id_tournoi };
-            $.functionsLib.callRest(domaine+"phpsql/mysql_getParticipantsTournoi.php", {functionRetour : vueParticipants}, tabInput);   
+            $.functionsLib.callRest(domaine+"phpsql/getParticipantsTournoi.php", {functionRetour : vueParticipants}, tabInput);   
         } catch (er) {
             $.functionsLib.log(0, "ERROR(chargerParticipants):" + er.message);
         }
@@ -250,7 +250,7 @@
     function supprimerParticipant(p_id_user){
         try {
             var tabInput = { id_user : p_id_user, id_tournoi : g_id_tournoi };
-            var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_delParticipant.php", {}, tabInput);
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/delParticipant.php", {}, tabInput);
             if(json_retour["strErreur"] == ""){
                 chargerParticipants();
                 chargerRechercheParticipant();
@@ -304,7 +304,7 @@
     function revenirParticipant(p_id_user){
         try {
             var tabInput = { id_user : p_id_user, id_tournoi : g_id_tournoi };
-            var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_inParticipant.php", {}, tabInput);
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/inParticipant.php", {}, tabInput);
             if(json_retour["strErreur"] == ""){
                 chargerParticipants();
             }else{
@@ -434,7 +434,7 @@
             });
             
             var tabInput = { id_tournois : g_id_tournoi };
-            var json_retour = $.functionsLib.callRest(domaine+"phpsql/mysql_getValeurTapis.php", {}, tabInput);
+            var json_retour = $.functionsLib.callRest(domaine+"phpsql/getValeurTapis.php", {}, tabInput);
             if(json_retour["strErreur"] == ""){
                 $("#totalJeton").html("<b>Valeur du tapis : "+json_retour["data"]["resultat"]["valeurTapis"]+" Jetons</b>");
             }else{
