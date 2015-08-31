@@ -40,7 +40,8 @@
                 $.Oda.Router.addRoute("home", {
                     "path" : "partials/home.html",
                     "title" : "oda-main.home-title",
-                    "urls" : ["","home"]
+                    "urls" : ["","home"],
+                    "dependencies" : ["dataTables"]
                 });
 
                 $.Oda.Router.startRooter();
@@ -55,14 +56,12 @@
         Controler : {
             Home : {
                 /**
-                 * @param {Object} p_params
-                 * @param p_params.id
                  * @returns {$.Oda.App.Controler.Home}
                  */
-                start : function (p_params) {
+                start : function () {
                     try {
-                        $.Oda.App.Controler.Home.loadTournoiFini();
-                        $.Oda.App.Controler.Home.loadTournoiEnCours();
+                        $.Oda.App.Controler.Home.loadTournoisFini();
+                        $.Oda.App.Controler.Home.loadTournoisEnCours();
 
                         return this;
                     } catch (er) {
@@ -73,26 +72,134 @@
                 /**
                  * @returns {$.Oda.App.Controler.Home}
                  */
-                loadTournoiFini : function () {
+                loadTournoisFini : function () {
                     try {
+                        var tabInput = { auteur : "", fini : "oui" };
+                        $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getTournois.php", {functionRetour : function(response){
+                            var strhtml = '<table cellpadding="0" cellspacing="0" border="0" class="display hover" id="tabTournoisFini" style="width: 100%"></table>';
+                            $("#divTabTournoisFini").html(strhtml);
+
+                            var objDataTable = $.Oda.Tooling.objDataTableFromJsonArray(response.data.resultat.data);
+                            var oTable = $('#tabTournoisFini').DataTable( {
+                                "sPaginationType": "full_numbers",
+                                "aaData": objDataTable.data,
+                                "aaSorting": [[1,'desc']],
+                                "aoColumns": [
+                                    { "sTitle": "Id","sClass": "center" },
+                                    { "sTitle": "Titre","sClass": "center" },
+                                    { "sTitle": "Date Début","sClass": "center" },
+                                    { "sTitle": "Date Fin","sClass": "center" },
+                                    { "sTitle": "Auteur","sClass": "center" }
+                                ],
+                                "aoColumnDefs": [
+                                    {
+                                        "mRender": function ( data, type, row ) {
+                                            return row[objDataTable.entete["id"]];
+                                        },
+                                        "aTargets": [ 0 ]
+                                    },
+                                    {
+                                        "mRender": function ( data, type, row ) {
+                                            return '<a target="_top" href="page_tournoi_param.html?&id_tournoi='+row[objDataTable.entete["id"]]+'&mili='+$.Oda.Tooling.getMilise()+'">'+row[objDataTable.entete["titre"]]+'</a>';
+                                        },
+                                        "aTargets": [ 1 ]
+                                    },
+                                    {
+                                        "mRender": function ( data, type, row ) {
+                                            return row[objDataTable.entete["dateDebut"]];
+                                        },
+                                        "aTargets": [ 2 ]
+                                    },
+                                    {
+                                        "mRender": function ( data, type, row ) {
+                                            return row[objDataTable.entete["dateFin"]];
+                                        },
+                                        "aTargets": [ 3 ]
+                                    },
+                                    {
+                                        "mRender": function ( data, type, row ) {
+                                            return row[objDataTable.entete["auteur"]];
+                                        },
+                                        "aTargets": [ 4 ]
+                                    }
+                                ],
+                                "fnDrawCallback": function( oSettings ) {
+                                    $('#tabTournoisFini')
+                                        .removeClass( 'display' )
+                                        .addClass('table table-striped table-bordered');
+                                }
+                            });
+                        }}, tabInput);
                         return this;
                     } catch (er) {
-                        $.Oda.Log.error("$.Oda.App.Controler.Home.loadTournoiFini : " + er.message);
+                        $.Oda.Log.error("$.Oda.App.Controler.Home.loadTournoisFini : " + er.message);
                         return null;
                     }
                 },
                 /**
                  * @returns {$.Oda.App.Controler.Home}
                  */
-                loadTournoiEnCours : function () {
+                loadTournoisEnCours : function () {
                     try {
                         var tabInput = { auteur : "", fini : "non" };
                         $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getTournois.php", {functionRetour : function(response){
-                            console.log(data);
+                            var strhtml = '<table cellpadding="0" cellspacing="0" border="0" class="display hover" id="tabTournoisEnCours" style="width: 100%"></table>';
+                            $("#divTabTournoisEnCours").html(strhtml);
+
+                            var objDataTable = $.Oda.Tooling.objDataTableFromJsonArray(response.data.resultat.data);
+                            var oTable = $('#tabTournoisEnCours').DataTable( {
+                                "sPaginationType": "full_numbers",
+                                "aaData": objDataTable.data,
+                                "aaSorting": [[1,'desc']],
+                                "aoColumns": [
+                                    { "sTitle": "Id","sClass": "center" },
+                                    { "sTitle": "Titre","sClass": "center" },
+                                    { "sTitle": "Date Création","sClass": "center" },
+                                    { "sTitle": "Date Début","sClass": "center" },
+                                    { "sTitle": "Auteur","sClass": "center" }
+                                ],
+                                "aoColumnDefs": [
+                                    {
+                                        "mRender": function ( data, type, row ) {
+                                            return row[objDataTable.entete["id"]];
+                                        },
+                                        "aTargets": [ 0 ]
+                                    },
+                                    {
+                                        "mRender": function ( data, type, row ) {
+                                            return '<a target="_top" href="page_tournoi_param.html?&id_tournoi='+row[objDataTable.entete["id"]]+'&mili='+$.Oda.Tooling.getMilise()+'">'+row[objDataTable.entete["titre"]]+'</a>';
+                                        },
+                                        "aTargets": [ 1 ]
+                                    },
+                                    {
+                                        "mRender": function ( data, type, row ) {
+                                            return row[objDataTable.entete["dateCreation"]];
+                                        },
+                                        "aTargets": [ 2 ]
+                                    },
+                                    {
+                                        "mRender": function ( data, type, row ) {
+                                            return row[objDataTable.entete["dateDebut"]];
+                                        },
+                                        "aTargets": [ 3 ]
+                                    },
+                                    {
+                                        "mRender": function ( data, type, row ) {
+                                            return row[objDataTable.entete["auteur"]];
+                                        },
+                                        "aTargets": [ 4 ]
+                                    }
+                                ],
+                                "fnDrawCallback": function( oSettings ) {
+                                    $('#tabTournoisEnCours')
+                                        .removeClass( 'display' )
+                                        .addClass('table table-striped table-bordered');
+                                }
+                            });
                         }}, tabInput);
                         return this;
                     } catch (er) {
-                        $.Oda.Log.error("$.Oda.App.Controler.Home.loadTournoiEnCours : " + er.message);
+                        $.Oda.Log.error("$.Oda.App.Controler.Home.loadTournoisEnCours : " + er.message);
                         return null;
                     }
                 },

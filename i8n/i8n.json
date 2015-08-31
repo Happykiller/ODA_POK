@@ -3,11 +3,15 @@
         "groupName" : "home"
         , "fr" : {
             "title" : "Accueil",
-            "hello" : "Bonjour avec le FrameWork Oda"
+            "hello" : "Bonjour avec le FrameWork Oda",
+            "tournoisEnCours" : "Tournois en cours",
+            "tournoisFini" : "Tournois fini"
         }
         , "en" : {
             "title" : "Home",
-            "hello" : "Hello with Oda FrameWork"
+            "hello" : "Hello with Oda FrameWork",
+            "tournoisEnCours" : "Contest running",
+            "tournoisFini" : "Contest finish"
         }
     }
 ]
