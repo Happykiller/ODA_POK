@@ -1,8 +1,0 @@
-+ ftp :
-monftplogin/monftppass
-
-+ db :
-ODA_POK/ODA_POK/ODA_POK_PASS
-
-+ CSV 
-moncvsname

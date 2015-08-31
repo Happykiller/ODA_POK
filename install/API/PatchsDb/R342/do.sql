@@ -1,1 +1,0 @@
-RENAME TABLE `tab_log` TO `api_tab_log`;
