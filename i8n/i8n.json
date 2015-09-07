@@ -13,5 +13,20 @@
             "tournoisEnCours" : "Contest running",
             "tournoisFini" : "Contest finish"
         }
+    },
+    {
+        "groupName" : "newContest",
+        "fr" : {
+            "title" : "Créer un tournoi",
+            "name" : "Nom",
+            "name-tips" : "Au moins trois lettres",
+            "name-placeholder" : "Votre nom de tournois ici"
+        },
+        "en" : {
+            "title" : "Create a contest",
+            "name" : "Name",
+            "name-tips" : "More than tree letters",
+            "name-placeholder" : "Your contest name here"
+        }
     }
 ]

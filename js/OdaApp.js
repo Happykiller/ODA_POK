@@ -41,6 +41,16 @@
                     "path" : "partials/home.html",
                     "title" : "oda-main.home-title",
                     "urls" : ["","home"],
+                    "middleWares":["support","auth"],
+                    "dependencies" : ["dataTables"]
+                });
+
+
+                $.Oda.Router.addRoute("newContest", {
+                    "path" : "partials/newContest.html",
+                    "title" : "newContest.title",
+                    "urls" : ["creer_tournoi"],
+                    "middleWares":["support","auth"],
                     "dependencies" : ["dataTables"]
                 });
 
@@ -200,6 +210,55 @@
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.Home.loadTournoisEnCours : " + er.message);
+                        return null;
+                    }
+                },
+            },
+            NewContest : {
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.NewContest}
+                 */
+                start : function (p_params) {
+                    try {
+                        $.Oda.Scope.Gardian.add({
+                            id : "gardianCreateContest",
+                            listElt : ["name"],
+                            function : function(params){
+                                if( ($("#name").data("isOk"))){
+                                    $("#submit").removeClass("disabled");
+                                    $("#submit").removeAttr("disabled");
+                                }else{
+                                    $("#submit").addClass("disabled");
+                                    $("#submit").attr("disabled", true);
+                                }
+                            }
+                        });
+
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.NewContest.start : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.NewContest}
+                 */
+                createContest : function (p_params) {
+                    try {
+                        var p_titre = $("#name").val();
+
+                        var tabInput = { code_user : $.Oda.Session.code_user, titre : p_titre };
+                        var json_retour = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/creerTournoi.php", {functionRetour: function(response){
+                            $.Oda.Display.Notification.success("Le tounoi n&deg;"+response.data.resultat+" a bien &eacute;t&eacute; cr&eacute;&eacute;");
+                        }}, tabInput);
+
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.NewContest.createContest : " + er.message);
                         return null;
                     }
                 },
