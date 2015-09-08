@@ -41,16 +41,23 @@
                     "path" : "partials/home.html",
                     "title" : "oda-main.home-title",
                     "urls" : ["","home"],
-                    "middleWares":["support","auth"],
+                    "middleWares" : ["support","auth"],
                     "dependencies" : ["dataTables"]
                 });
-
 
                 $.Oda.Router.addRoute("newContest", {
                     "path" : "partials/newContest.html",
                     "title" : "newContest.title",
                     "urls" : ["creer_tournoi"],
-                    "middleWares":["support","auth"],
+                    "middleWares" : ["support","auth"],
+                    "dependencies" : ["dataTables"]
+                });
+
+                $.Oda.Router.addRoute("detailsContest", {
+                    "path" : "partials/detailsContest.html",
+                    "title" : "detailsContest.title",
+                    "urls" : ["tournoi_param"],
+                    "middleWares" : ["support","auth"],
                     "dependencies" : ["dataTables"]
                 });
 
@@ -110,7 +117,7 @@
                                     },
                                     {
                                         "mRender": function ( data, type, row ) {
-                                            return '<a target="_top" href="page_tournoi_param.html?&id_tournoi='+row[objDataTable.entete["id"]]+'&mili='+$.Oda.Tooling.getMilise()+'">'+row[objDataTable.entete["titre"]]+'</a>';
+                                            return '<a href="javascript:$.Oda.Router.navigateTo({\'route\':\'tournoi_param\',args:{\'id\':'+row[objDataTable.entete["id"]]+'}});">'+row[objDataTable.entete["titre"]]+'</a>';
                                         },
                                         "aTargets": [ 1 ]
                                     },
@@ -177,7 +184,7 @@
                                     },
                                     {
                                         "mRender": function ( data, type, row ) {
-                                            return '<a target="_top" href="page_tournoi_param.html?&id_tournoi='+row[objDataTable.entete["id"]]+'&mili='+$.Oda.Tooling.getMilise()+'">'+row[objDataTable.entete["titre"]]+'</a>';
+                                            return '<a href="javascript:$.Oda.Router.navigateTo({\'route\':\'tournoi_param\',args:{\'id\':'+row[objDataTable.entete["id"]]+'}});">'+row[objDataTable.entete["titre"]]+'</a>';
                                         },
                                         "aTargets": [ 1 ]
                                     },
@@ -259,6 +266,21 @@
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.NewContest.createContest : " + er.message);
+                        return null;
+                    }
+                },
+            },
+            DetailsContest : {
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                start : function (p_params) {
+                    try {
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.start : " + er.message);
                         return null;
                     }
                 },

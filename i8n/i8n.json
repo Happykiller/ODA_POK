@@ -28,5 +28,14 @@
             "name-tips" : "More than tree letters",
             "name-placeholder" : "Your contest name here"
         }
+    },
+    {
+        "groupName" : "detailsContest",
+        "fr" : {
+            "title" : "Détails du tournoi"
+        },
+        "en" : {
+            "title" : "Details of contest"
+        }
     }
 ]
