@@ -32,10 +32,22 @@
     {
         "groupName" : "detailsContest",
         "fr" : {
-            "title" : "Détails du tournoi"
+            "title" : "Détails du tournoi",
+            "details" : "Détails",
+            "live" : "Direct",
+            "histo" : "Historique",
+            "rules" : "Règles",
+            "param" : "Paramètres",
+            "name" : "Nom"
         },
         "en" : {
-            "title" : "Details of contest"
+            "title" : "Details of contest",
+            "details" : "Details",
+            "live" : "Live",
+            "histo" : "History",
+            "rules" :  "Règles",
+            "param" : "Parameters",
+            "name" : "Name"
         }
     }
 ]

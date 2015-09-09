@@ -259,7 +259,7 @@
                         var p_titre = $("#name").val();
 
                         var tabInput = { code_user : $.Oda.Session.code_user, titre : p_titre };
-                        var json_retour = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/creerTournoi.php", {functionRetour: function(response){
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/creerTournoi.php", {functionRetour: function(response){
                             $.Oda.Display.Notification.success("Le tounoi n&deg;"+response.data.resultat+" a bien &eacute;t&eacute; cr&eacute;&eacute;");
                         }}, tabInput);
 
@@ -271,16 +271,65 @@
                 },
             },
             DetailsContest : {
+                currentContest : {},
+                /**
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                start : function () {
+                    try {
+                        if($.Oda.Router.current.args.hasOwnProperty("id")){
+                            $.Oda.Storage.set("currentContest-"+ $.Oda.Session.code_user,{id:$.Oda.Router.current.args.id});
+                        }else{
+                            if($.Oda.Storage.get("currentContest-"+ $.Oda.Session.code_user) === null){
+                                $.Oda.Router.navigateTo({'route':'home',args:{}})
+                                console.log("HAALOOOO");
+                                throw {message : "Id tournois unknow."};
+                            }
+                        }
+
+                        $.Oda.App.Controler.DetailsContest.currentContest = $.Oda.Storage.get("currentContest", {id:$.Oda.Router.current.args.id});
+
+                        var tabInput = { table : 'tab_tournois', get : '{"champ":"titre","type":"PARAM_STR"}', filtre : '{"champ":"id","valeur":"'+ $.Oda.App.Controler.DetailsContest.currentContest.id +'","type":"PARAM_INT"}'};
+
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getter.php", {functionRetour: function(response){
+                            $("#name").val(response.data.resultat.champ);
+                        }}, tabInput);
+
+                        $.Oda.Scope.Gardian.add({
+                            id : "gardianUpdataParamContest",
+                            listElt : ["name"],
+                            function : function(params){
+                                if( ($("#name").data("isOk"))){
+                                    $("#submit-param").removeClass("disabled");
+                                    $("#submit-param").removeAttr("disabled");
+                                }else{
+                                    $("#submit-param").addClass("disabled");
+                                    $("#submit-param").attr("disabled", true);
+                                }
+                            }
+                        });
+
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.start : " + er.message);
+                        return null;
+                    }
+                },
                 /**
                  * @param {Object} p_params
                  * @param p_params.id
                  * @returns {$.Oda.App.Controler.DetailsContest}
                  */
-                start : function (p_params) {
+                submitParam : function (p_params) {
                     try {
+                        var tabInput = { table : 'tab_tournois', set : '{"champ":"titre","valeur":"'+$("#name").val()+'","type":"PARAM_STR"}', filtre : '{"champ":"id","valeur":"'+$.Oda.App.Controler.DetailsContest.currentContest.id+'","type":"PARAM_INT"}'};
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/setter.php", {functionRetour: function(response){
+                            $.Oda.Display.Notification.success("Mise &agrave; jour r&eacute;ussi.");
+                        }}, tabInput);
+
                         return this;
                     } catch (er) {
-                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.start : " + er.message);
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.submitParam : " + er.message);
                         return null;
                     }
                 },

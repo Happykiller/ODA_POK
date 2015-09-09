@@ -1,8 +1,23 @@
 <div class="container">
     <h2 oda-label="detailsContest.title">detailsContest.title</h2>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="" role="tab" data-toggle="tab" oda-label="detailsContest.details">detailsContest.details</a></li>
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_live',args:{}});" role="tab" oda-label="detailsContest.live">detailsContest.live</a></li>
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_histo',args:{}});" role="tab" oda-label="detailsContest.histo">detailsContest.histo</a></li>
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_rules',args:{}});" role="tab" oda-label="detailsContest.rules">detailsContest.rules</a></li>
+    </ul>
+    <h3 oda-label="detailsContest.param">detailsContest.param</h3>
     <div class="row">
         <div class="col-md-12">
-            <oda-loading></oda-loading>
+            <div class="form-group">
+                <label for="name" oda-label="detailsContest.name">name</label>
+                <input type="text" class="form-control" oda-input-text="name" oda-input-text-tips="detailsContest.name-tips"
+                       oda-input-text-placeholder="detailsContest.name-placeholder" oda-input-text-check="Oda.Regexs:Oda.Regexs:lastName" required>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <button type="button" oda-label="oda-main.bt-submit" oda-submit="submit-param" onclick="$.Oda.App.Controler.DetailsContest.submitParam();" class="btn btn-primary disabled" disabled>Submit</button >
         </div>
     </div>
 </div>
