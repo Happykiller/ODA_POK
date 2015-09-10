@@ -38,7 +38,10 @@
             "histo" : "Historique",
             "rules" : "Règles",
             "param" : "Paramètres",
-            "name" : "Nom"
+            "name" : "Nom",
+            "reset" : "Remise à zéro",
+            "participants" : "Liste des participants",
+            "addParticipant" : "Ajouter un participant"
         },
         "en" : {
             "title" : "Details of contest",
@@ -47,7 +50,10 @@
             "histo" : "History",
             "rules" :  "Règles",
             "param" : "Parameters",
-            "name" : "Name"
+            "name" : "Name",
+            "reset" : "Reset",
+            "participants" : "List of participants",
+            "addParticipant" : "Add a participant"
         }
     }
 ]

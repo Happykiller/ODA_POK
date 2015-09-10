@@ -309,9 +309,64 @@
                             }
                         });
 
+                        $.Oda.App.Controler.DetailsContest.loadListParticipant();
+
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.start : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                loadListParticipant : function () {
+                    try {
+                        var tabInput = { id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getParticipantsTournoi.php", {functionRetour : function(response) {
+                            var strhtml = '<table cellpadding="0" cellspacing="0" border="0" class="display hover" id="tabParticipants" style="width: 100%"></table>';
+                            $("#divParticipants").html(strhtml);
+
+                            var objDataTable = $.Oda.Tooling.objDataTableFromJsonArray(response.data.resultat.data);
+                            var oTable = $('#tabParticipants').DataTable({
+                                "sPaginationType": "full_numbers",
+                                "aaData": objDataTable.data,
+                                "aaSorting": [[0, 'desc']],
+                                "aoColumns": [
+                                    {"sTitle": "Nom", "sClass": "dataTableColCenter"},
+                                    {"sTitle": "Prénom", "sClass": "dataTableColCenter"},
+                                    {"sTitle": "Action"}
+                                ],
+                                "aoColumnDefs": [
+                                    {
+                                        "mRender": function (data, type, row) {
+                                            return row[objDataTable.entete["nom"]];
+                                        },
+                                        "aTargets": [0]
+                                    },
+                                    {
+                                        "mRender": function (data, type, row) {
+                                            return row[objDataTable.entete["prenom"]];
+                                        },
+                                        "aTargets": [1]
+                                    },
+                                    {
+                                        "mRender": function (data, type, row) {
+                                            return "";
+                                        },
+                                        "aTargets": [2]
+                                    }
+                                ],
+                                "fnDrawCallback": function (oSettings) {
+                                    $('#tabParticipants')
+                                        .removeClass('display')
+                                        .addClass('table table-striped table-bordered');
+                                }
+                            });
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.loadListParticipant : " + er.message);
                         return null;
                     }
                 },
@@ -330,6 +385,95 @@
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.submitParam : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                reset : function () {
+                    try {
+                        var tabInput = { action : 'reinit', id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/actionDecompte.php", {functionRetour: function(response){
+                            $.Oda.Display.Notification.success("Remise à zéro r&eacute;ussi.");
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.reset : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                addParticipant : function () {
+                    try {
+                        $.Oda.Display.Popup.open({"label" : $.Oda.I8n.get('detailsContest','addParticipant'), "details" : '<div id="divListUser"><oda-loading></oda-loading></div>', callback : function(){
+                            var tabInput = { recherche : "", id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                            $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getParticipants.php", {functionRetour : function(response) {
+                                var strhtml = '<table cellpadding="0" cellspacing="0" border="0" class="display hover" id="tabListUser" style="width: 100%"></table>';
+                                $("#divListUser").html(strhtml);
+
+                                var objDataTable = $.Oda.Tooling.objDataTableFromJsonArray(response.data.resultat.data);
+                                var oTable = $('#tabListUser').DataTable({
+                                    "sPaginationType": "full_numbers",
+                                    "aaData": objDataTable.data,
+                                    "aaSorting": [[0, 'desc']],
+                                    "aoColumns": [
+                                        {"sTitle": "Nom", "sClass": "dataTableColCenter"},
+                                        {"sTitle": "Prénom", "sClass": "dataTableColCenter"},
+                                        {"sTitle": "Action"}
+                                    ],
+                                    "aoColumnDefs": [
+                                        {
+                                            "mRender": function (data, type, row) {
+                                                return row[objDataTable.entete["nom"]];
+                                            },
+                                            "aTargets": [0]
+                                        },
+                                        {
+                                            "mRender": function (data, type, row) {
+                                                return row[objDataTable.entete["prenom"]];
+                                            },
+                                            "aTargets": [1]
+                                        },
+                                        {
+                                            "mRender": function (data, type, row) {
+                                                var strHtml = '<button onclick="$.Oda.App.Controler.DetailsContest.addParticipantSelected({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>';
+                                                return strHtml;
+                                            },
+                                            "aTargets": [2]
+                                        }
+                                    ],
+                                    "fnDrawCallback": function (oSettings) {
+                                        $('#tabListUser')
+                                            .removeClass('display')
+                                            .addClass('table table-striped table-bordered');
+                                    }
+                                });
+                            }}, tabInput);
+                        }, name : "popListUser"});
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.addParticipant : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                addParticipantSelected : function (p_params) {
+                    try {
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/addParticipant.php", {functionRetour : function(response) {
+                            $.Oda.Display.Popup.close({name:"popListUser"});
+                            $.Oda.App.Controler.DetailsContest.loadListParticipant();
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.addParticipantSelected : " + er.message);
                         return null;
                     }
                 },
