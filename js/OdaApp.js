@@ -335,6 +335,8 @@
                                 "aoColumns": [
                                     {"sTitle": "Nom", "sClass": "dataTableColCenter"},
                                     {"sTitle": "Prénom", "sClass": "dataTableColCenter"},
+                                    {"sTitle": "Addon", "sClass": "dataTableColCenter"},
+                                    {"sTitle": "Cave", "sClass": "dataTableColCenter"},
                                     {"sTitle": "Action"}
                                 ],
                                 "aoColumnDefs": [
@@ -352,9 +354,32 @@
                                     },
                                     {
                                         "mRender": function (data, type, row) {
-                                            return "";
+                                            return row[objDataTable.entete["nb_addon"]];
                                         },
                                         "aTargets": [2]
+                                    },
+                                    {
+                                        "mRender": function (data, type, row) {
+                                            return row[objDataTable.entete["nb_recave"]];
+                                        },
+                                        "aTargets": [3]
+                                    },
+                                    {
+                                        "mRender": function (data, type, row) {
+                                            var strHtml = '';
+                                            if (row[objDataTable.entete["roundFin"]] !== '0') {
+                                                strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.DetailsContest.backParticipant({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-warning btn-xs" title="revenir"><span class="glyphicon glyphicon-retweet" aria-hidden="true"></span></button>';
+                                            }
+                                            if (row[objDataTable.entete["nb_addon"]] !== '0') {
+                                                strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.DetailsContest.delAddonParticipant({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-warning btn-xs" title="retirer addon"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></button>';
+                                            }
+                                            if (row[objDataTable.entete["nb_recave"]] !== '0') {
+                                                strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.DetailsContest.delCaveParticipant({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-warning btn-xs" title="retirer cave"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>';
+                                            }
+                                            strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.DetailsContest.delParticipant({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-danger btn-xs" title="delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>';
+                                            return strHtml;
+                                        },
+                                        "aTargets": [4]
                                     }
                                 ],
                                 "fnDrawCallback": function (oSettings) {
@@ -474,6 +499,78 @@
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.addParticipantSelected : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                delParticipant : function (p_params) {
+                    try {
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/delParticipant.php", {functionRetour : function(response) {
+                            $.Oda.App.Controler.DetailsContest.loadListParticipant();
+                        }}, tabInput);
+
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.delParticipant : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                backParticipant : function (p_params) {
+                    try {
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/inParticipant.php", {functionRetour : function(response) {
+                            $.Oda.App.Controler.DetailsContest.loadListParticipant();
+                        }}, tabInput);
+
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.backParticipant : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                delAddonParticipant : function (p_params) {
+                    try {
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id, type : 'recave' };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/delNewTapisParticipant.php", {functionRetour : function(response) {
+                            $.Oda.App.Controler.DetailsContest.loadListParticipant();
+                        }}, tabInput);
+
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.delAddonParticipant : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                delCaveParticipant : function (p_params) {
+                    try {
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id, type : 'addon' };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/delNewTapisParticipant.php", {functionRetour : function(response) {
+                            $.Oda.App.Controler.DetailsContest.loadListParticipant();
+                        }}, tabInput);
+
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.delCaveParticipant : " + er.message);
                         return null;
                     }
                 },
