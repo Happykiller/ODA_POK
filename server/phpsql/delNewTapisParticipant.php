@@ -42,7 +42,7 @@ if($id != 0){
          AND `id` = :id
     ;";
     $params->bindsValue = [
-        "id" => $INTERFACE->inputs["id"]
+        "id" => $id
     ];
     $params->typeSQL = OdaLibBd::SQL_SCRIPT;
     $retour = $INTERFACE->BD_ENGINE->reqODASQL($params);

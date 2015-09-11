@@ -545,7 +545,7 @@
                  */
                 delAddonParticipant : function (p_params) {
                     try {
-                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id, type : 'recave' };
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id, type : 'addon' };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/delNewTapisParticipant.php", {functionRetour : function(response) {
                             $.Oda.App.Controler.DetailsContest.loadListParticipant();
                         }}, tabInput);
@@ -563,7 +563,7 @@
                  */
                 delCaveParticipant : function (p_params) {
                     try {
-                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id, type : 'addon' };
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id, type : 'recave' };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/delNewTapisParticipant.php", {functionRetour : function(response) {
                             $.Oda.App.Controler.DetailsContest.loadListParticipant();
                         }}, tabInput);
