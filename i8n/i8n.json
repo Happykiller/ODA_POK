@@ -41,7 +41,17 @@
             "name" : "Nom",
             "reset" : "Remise à zéro",
             "participants" : "Liste des participants",
-            "addParticipant" : "Ajouter un participant"
+            "addParticipant" : "Ajouter un participant",
+            "tapis" : "Les tapis",
+            "valueJeton" : "Valeur du jeton",
+            "nbJeton" : "Nombre de jeton",
+            "sumJeton" : "Total en jeton",
+            "labelTotalTapis" : "Pour un total en jeton",
+            "round" : "Les rounds",
+            "time" : "Temps(min)",
+            "smallBlind" : "Small Blind",
+            "bigBlind" : "Big Blind",
+            "ante" : "Ante"
         },
         "en" : {
             "title" : "Details of contest",
@@ -53,7 +63,17 @@
             "name" : "Name",
             "reset" : "Reset",
             "participants" : "List of participants",
-            "addParticipant" : "Add a participant"
+            "addParticipant" : "Add a participant",
+            "tapis" : "Tapis",
+            "valueJeton" : "Value",
+            "nbJeton" : "Number",
+            "sumJeton" : "Total",
+            "labelTotalTapis" : "For a amount total",
+            "round" : "Rounds",
+            "time" : "Time(min)",
+            "smallBlind" : "Small Blind",
+            "bigBlind" : "Big Blind",
+            "ante" : "Ante"
         }
     }
 ]

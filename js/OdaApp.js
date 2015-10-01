@@ -310,6 +310,8 @@
                         });
 
                         $.Oda.App.Controler.DetailsContest.loadListParticipant();
+                        $.Oda.App.Controler.DetailsContest.detailsTapis();
+                        $.Oda.App.Controler.DetailsContest.detailsRound();
 
                         return this;
                     } catch (er) {
@@ -571,6 +573,73 @@
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.delCaveParticipant : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                detailsTapis : function (p_params) {
+                    try {
+                        var tabInput = { id_tournois : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getTapis.php", {functionRetour : function(response) {
+                            var strBody = "";
+                            var sum = 0;
+
+                            $.each( response.data.resultat.data, function( key, value ) {
+                                var total = parseInt(value.valeur_jeton) * parseInt(value.nb_jeton);
+                                sum += total;
+                                strBody += '<tr><td>'+value.valeur_jeton+'</td><td>'+value.nb_jeton+'</td><td>'+total+'</td></tr>';
+                            });
+
+                            var strHtml = $.Oda.Display.TemplateHtml.create({
+                                template : "templateTapis"
+                                , scope : {
+                                    tbody : strBody,
+                                    valueTotalTapis : sum,
+                                    labelTotalTapis : $.Oda.I8n.getByString("detailsContest.labelTotalTapis")
+                                }
+                            });
+
+                            $('#divTapis').html(strHtml);
+                        }}, tabInput);
+
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.detailsTapis : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.DetailsContest}
+                 */
+                detailsRound : function (p_params) {
+                    try {
+                        var tabInput = { id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getRounds.php", {functionRetour : function(response) {
+                            var strBody = "";
+
+                            $.each( response.data.resultat.data, function( key, value ) {
+                                strBody += '<tr><td>'+value.temps+'</td><td>'+value.small_blind+'</td><td>'+value.big_blind+'</td><td>'+value.ante+'</td></tr>';
+                            });
+
+                            var strHtml = $.Oda.Display.TemplateHtml.create({
+                                template : "templateRound"
+                                , scope : {
+                                    tbody : strBody
+                                }
+                            });
+
+                            $('#divRound').html(strHtml);
+                        }}, tabInput);
+
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.detailsRound : " + er.message);
                         return null;
                     }
                 },

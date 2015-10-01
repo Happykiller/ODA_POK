@@ -32,8 +32,72 @@
             <button type="button" oda-label="detailsContest.addParticipant" onclick="$.Oda.App.Controler.DetailsContest.addParticipant();" class="btn btn-primary">Add</button >
         </div>
     </div>
+
+    <h3 oda-label="detailsContest.tapis">detailsContest.tapis</h3>
+    <div class="row">
+        <div class="col-md-12" id="divTapis">
+            <oda-loading></oda-loading>
+        </div>
+    </div>
+
+    <h3 oda-label="detailsContest.round">detailsContest.round</h3>
+    <div class="row">
+        <div class="col-md-12" id="divRound">
+            <oda-loading></oda-loading>
+        </div>
+    </div>
 </div>
 
 <script>
     $.Oda.App.Controler.DetailsContest.start();
+</script>
+
+<script id="templateTapis" type="text/template">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        <label oda-label="detailsContest.valueJeton">valueJeton</label>
+                    </th>
+                    <th>
+                        <label oda-label="detailsContest.nbJeton">nbJeton</label>
+                    </th>
+                    <th>
+                        <label oda-label="detailsContest.sumJeton">sumJeton</label>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{tbody}}
+            </tbody>
+        </table>
+    </div>
+    <p>{{labelTotalTapis}} : {{valueTotalTapis}}</p>
+</script>
+
+<script id="templateRound" type="text/template">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>
+                    <label oda-label="detailsContest.time">time</label>
+                </th>
+                <th>
+                    <label oda-label="detailsContest.smallBlind">smallBlind</label>
+                </th>
+                <th>
+                    <label oda-label="detailsContest.bigBlind">bigBlind</label>
+                </th>
+                <th>
+                    <label oda-label="detailsContest.ante">ante</label>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {{tbody}}
+            </tbody>
+        </table>
+    </div>
 </script>
