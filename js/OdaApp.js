@@ -61,6 +61,13 @@
                     "dependencies" : ["dataTables"]
                 });
 
+                $.Oda.Router.addRoute("liveContest", {
+                    "path" : "partials/liveContest.html",
+                    "title" : "liveContest.title",
+                    "urls" : ["tournoi_live"],
+                    "middleWares" : ["support","auth"]
+                });
+
                 $.Oda.Router.startRooter();
 
                 return this;
@@ -640,6 +647,21 @@
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.DetailsContest.detailsRound : " + er.message);
+                        return null;
+                    }
+                },
+            },
+            liveContest : {
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.LiveContest}
+                 */
+                start : function (p_params) {
+                    try {
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.LiveContest.start : " + er.message);
                         return null;
                     }
                 },

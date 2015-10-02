@@ -75,5 +75,14 @@
             "bigBlind" : "Big Blind",
             "ante" : "Ante"
         }
+    },
+    {
+        "groupName" : "liveContest",
+        "fr" : {
+            "title" : "Direct"
+        },
+        "en" : {
+            "title" : "Live"
+        }
     }
 ]
