@@ -1,74 +1,67 @@
 <div class="container">
     <h2 oda-label="liveContest.title" id="title">liveContest.title</h2>
     <div class="row">
-        <div class="col-md-12" id="table">
-            <div class="row">
-                <div class="col-md-1 col-md-offset-3">
-                    <oda-loading></oda-loading>
+        <div class="col-md-12">
+            <div id="table">
+                <div class="oda-grid-row">
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content"></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content" id="set4"><oda-loading></oda-loading></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content" id="set5"><oda-loading></oda-loading></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content" id="set6"><oda-loading></oda-loading></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content" id="set7"><oda-loading></oda-loading></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content"></div>
+                    </div>
                 </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
+                <div class="oda-grid-row">
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content" id="set3"><oda-loading></oda-loading></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content"></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content"></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content"></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content"></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content" id="set8"><oda-loading></oda-loading></div>
+                    </div>
                 </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-1 col-md-offset-3">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-1 col-md-offset-3">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
-                </div>
-                <div class="col-md-1">
-                    <oda-loading></oda-loading>
+                <div class="oda-grid-row">
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content"></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content" id="set2"><oda-loading></oda-loading></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content" id="set1"><oda-loading></oda-loading></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content" id="set10"><oda-loading></oda-loading></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content" id="set9"><oda-loading></oda-loading></div>
+                    </div>
+                    <div class="oda-grid-cell">
+                        <div class="oda-grid-cell-content"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,6 +75,18 @@
 
 <script>
     $.Oda.App.Controler.liveContest.start();
+
+    var tableWidth = $("#table").width();
+    var tableHeight = $("#table").height();
+    var tableNbRow = $("#table .oda-grid-row").length;
+    var tableNbCell = $("#table .oda-grid-row:first .oda-grid-cell").length;
+
+    var rowHeight = tableHeight / tableNbRow;
+    $("#table .oda-grid-row").height(rowHeight);
+
+    var cellWidth = (tableWidth / tableNbCell);
+    $("#table .oda-grid-row .oda-grid-cell").height(rowHeight);
+    $("#table .oda-grid-row .oda-grid-cell").width(cellWidth);
 </script>
 
 <style>
@@ -94,5 +99,15 @@
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+}
+.oda-grid-cell {
+    text-align: center;
+    float: left;
+    display: table;
+    width: 100%;
+}
+.oda-grid-cell-content {
+    display: table-cell;
+    vertical-align: middle;
 }
 </style>
