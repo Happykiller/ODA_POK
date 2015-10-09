@@ -74,7 +74,7 @@
 </div>
 
 <script>
-    $.Oda.App.Controler.liveContest.start();
+    $.Oda.App.Controler.LiveContest.start();
 
     var tableWidth = $("#table").width();
     var tableHeight = $("#table").height();
@@ -111,3 +111,19 @@
     vertical-align: middle;
 }
 </style>
+
+<script id="templatePlayer" type="text/template">
+    <!-- TODO pb centrage -->
+    <div class="panel panel-default" style="width: 95%">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{name}} - 2</h3>
+        </div>
+        <div class="panel-body">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default" title="addon"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+                <button type="button" class="btn btn-default" title="cave"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></button>
+                <button type="button" class="btn btn-default" title="quit"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+            </div>
+        </div>
+    </div>
+</script>

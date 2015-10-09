@@ -78,6 +78,7 @@
         },
 
         Controler : {
+            currentContest : {},
             Home : {
                 /**
                  * @returns {$.Oda.App.Controler.Home}
@@ -278,7 +279,6 @@
                 },
             },
             DetailsContest : {
-                currentContest : {},
                 /**
                  * @returns {$.Oda.App.Controler.DetailsContest}
                  */
@@ -289,14 +289,13 @@
                         }else{
                             if($.Oda.Storage.get("currentContest-"+ $.Oda.Session.code_user) === null){
                                 $.Oda.Router.navigateTo({'route':'home',args:{}})
-                                console.log("HAALOOOO");
                                 throw {message : "Id tournois unknow."};
                             }
                         }
 
-                        $.Oda.App.Controler.DetailsContest.currentContest = $.Oda.Storage.get("currentContest", {id:$.Oda.Router.current.args.id});
+                        $.Oda.App.Controler.currentContest = $.Oda.Storage.get("currentContest", {id:$.Oda.Router.current.args.id});
 
-                        var tabInput = { table : 'tab_tournois', get : '{"champ":"titre","type":"PARAM_STR"}', filtre : '{"champ":"id","valeur":"'+ $.Oda.App.Controler.DetailsContest.currentContest.id +'","type":"PARAM_INT"}'};
+                        var tabInput = { table : 'tab_tournois', get : '{"champ":"titre","type":"PARAM_STR"}', filtre : '{"champ":"id","valeur":"'+ $.Oda.App.Controler.currentContest.id +'","type":"PARAM_INT"}'};
 
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getter.php", {functionRetour: function(response){
                             $("#name").val(response.data.resultat.champ);
@@ -331,7 +330,7 @@
                  */
                 loadListParticipant : function () {
                     try {
-                        var tabInput = { id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id };
                         $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getParticipantsTournoi.php", {functionRetour : function(response) {
                             var strhtml = '<table cellpadding="0" cellspacing="0" border="0" class="display hover" id="tabParticipants" style="width: 100%"></table>';
                             $("#divParticipants").html(strhtml);
@@ -411,7 +410,7 @@
                  */
                 submitParam : function (p_params) {
                     try {
-                        var tabInput = { table : 'tab_tournois', set : '{"champ":"titre","valeur":"'+$("#name").val()+'","type":"PARAM_STR"}', filtre : '{"champ":"id","valeur":"'+$.Oda.App.Controler.DetailsContest.currentContest.id+'","type":"PARAM_INT"}'};
+                        var tabInput = { table : 'tab_tournois', set : '{"champ":"titre","valeur":"'+$("#name").val()+'","type":"PARAM_STR"}', filtre : '{"champ":"id","valeur":"'+$.Oda.App.Controler.currentContest.id+'","type":"PARAM_INT"}'};
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/setter.php", {functionRetour: function(response){
                             $.Oda.Display.Notification.success("Mise &agrave; jour r&eacute;ussi.");
                         }}, tabInput);
@@ -427,7 +426,7 @@
                  */
                 reset : function () {
                     try {
-                        var tabInput = { action : 'reinit', id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var tabInput = { action : 'reinit', id_tournoi : $.Oda.App.Controler.currentContest.id };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/actionDecompte.php", {functionRetour: function(response){
                             $.Oda.Display.Notification.success("Remise à zéro r&eacute;ussi.");
                         }}, tabInput);
@@ -443,7 +442,7 @@
                 addParticipant : function () {
                     try {
                         $.Oda.Display.Popup.open({"label" : $.Oda.I8n.get('detailsContest','addParticipant'), "details" : '<div id="divListUser"><oda-loading></oda-loading></div>', callback : function(){
-                            var tabInput = { recherche : "", id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                            var tabInput = { recherche : "", id_tournoi : $.Oda.App.Controler.currentContest.id };
                             $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getParticipants.php", {functionRetour : function(response) {
                                 var strhtml = '<table cellpadding="0" cellspacing="0" border="0" class="display hover" id="tabListUser" style="width: 100%"></table>';
                                 $("#divListUser").html(strhtml);
@@ -500,7 +499,7 @@
                  */
                 addParticipantSelected : function (p_params) {
                     try {
-                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.currentContest.id };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/addParticipant.php", {functionRetour : function(response) {
                             $.Oda.Display.Popup.close({name:"popListUser"});
                             $.Oda.App.Controler.DetailsContest.loadListParticipant();
@@ -518,7 +517,7 @@
                  */
                 delParticipant : function (p_params) {
                     try {
-                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.currentContest.id };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/delParticipant.php", {functionRetour : function(response) {
                             $.Oda.App.Controler.DetailsContest.loadListParticipant();
                         }}, tabInput);
@@ -536,7 +535,7 @@
                  */
                 backParticipant : function (p_params) {
                     try {
-                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.currentContest.id };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/inParticipant.php", {functionRetour : function(response) {
                             $.Oda.App.Controler.DetailsContest.loadListParticipant();
                         }}, tabInput);
@@ -554,7 +553,7 @@
                  */
                 delAddonParticipant : function (p_params) {
                     try {
-                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id, type : 'addon' };
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.currentContest.id, type : 'addon' };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/delNewTapisParticipant.php", {functionRetour : function(response) {
                             $.Oda.App.Controler.DetailsContest.loadListParticipant();
                         }}, tabInput);
@@ -572,7 +571,7 @@
                  */
                 delCaveParticipant : function (p_params) {
                     try {
-                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id, type : 'recave' };
+                        var tabInput = { id_user : p_params.id, id_tournoi : $.Oda.App.Controler.currentContest.id, type : 'recave' };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/delNewTapisParticipant.php", {functionRetour : function(response) {
                             $.Oda.App.Controler.DetailsContest.loadListParticipant();
                         }}, tabInput);
@@ -590,7 +589,7 @@
                  */
                 detailsTapis : function (p_params) {
                     try {
-                        var tabInput = { id_tournois : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var tabInput = { id_tournois : $.Oda.App.Controler.currentContest.id };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getTapis.php", {functionRetour : function(response) {
                             var strBody = "";
                             var sum = 0;
@@ -626,7 +625,7 @@
                  */
                 detailsRound : function (p_params) {
                     try {
-                        var tabInput = { id_tournoi : $.Oda.App.Controler.DetailsContest.currentContest.id };
+                        var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getRounds.php", {functionRetour : function(response) {
                             var strBody = "";
 
@@ -651,7 +650,7 @@
                     }
                 },
             },
-            liveContest : {
+            LiveContest : {
                 /**
                  * @param {Object} p_params
                  * @param p_params.id
@@ -659,9 +658,48 @@
                  */
                 start : function (p_params) {
                     try {
+                        if($.Oda.Router.current.args.hasOwnProperty("id")){
+                            $.Oda.Storage.set("currentContest-"+ $.Oda.Session.code_user,{id:$.Oda.Router.current.args.id});
+                        }else{
+                            if($.Oda.Storage.get("currentContest-"+ $.Oda.Session.code_user) === null){
+                                $.Oda.Router.navigateTo({'route':'home',args:{}})
+                                throw {message : "Id tournois unknow."};
+                            }
+                        }
+
+                        $.Oda.App.Controler.currentContest = $.Oda.Storage.get("currentContest", {id:$.Oda.Router.current.args.id});
+
+                        $.Oda.App.Controler.LiveContest.loadPlayers();
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.LiveContest.start : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.LiveContest}
+                 */
+                loadPlayers : function (p_params) {
+                    try {
+                        var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getParticipantsTournoi.php", {functionRetour : function(response) {
+                            console.log(response);
+                            var dataRetour = response.data.resultat.data;
+                            for (var indice in dataRetour) {
+                                var strHtml = $.Oda.Display.TemplateHtml.create({
+                                    template : "templatePlayer"
+                                    , scope : {
+                                        name : dataRetour[indice].prenom + "." + dataRetour[indice].nom.substring(0, 1)
+                                    }
+                                });
+                                $('#set' + (parseInt(indice) + 1)).html(strHtml);
+                            }
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.LiveContest.loadPlayers : " + er.message);
                         return null;
                     }
                 },
