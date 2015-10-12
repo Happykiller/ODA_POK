@@ -23,9 +23,13 @@ $params->sql = "UPDATE `tab_participants`
      `roundFin` = '0'
      WHERE 1=1
      AND `id_tournoi` = :id_tournoi
-     AND `id_user` = :id_user
+     AND `id` = :id_user
 ;";
 $params->typeSQL = OdaLibBd::SQL_SCRIPT;
+$params->bindsValue = [
+    "id_tournoi" => $INTERFACE->inputs["id_tournoi"]
+     , "id_user" => $INTERFACE->inputs["id_user"]
+];
 $retour = $INTERFACE->BD_ENGINE->reqODASQL($params);
 
 $params = new stdClass();

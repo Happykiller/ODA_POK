@@ -1,5 +1,12 @@
 <div class="container">
     <h2 oda-label="liveContest.title" id="title">liveContest.title</h2>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_param',args:{}});" role="tab" oda-label="detailsContest.details">detailsContest.details</a></li>
+        <li role="presentation" class="active"><a href="" role="tab" oda-label="detailsContest.live">detailsContest.live</a></li>
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_histo',args:{}});" role="tab" oda-label="detailsContest.histo">detailsContest.histo</a></li>
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_rules',args:{}});" role="tab" oda-label="detailsContest.rules">detailsContest.rules</a></li>
+    </ul>
     <div class="row">
         <div class="col-md-12">
             <div id="table">
@@ -113,16 +120,15 @@
 </style>
 
 <script id="templatePlayer" type="text/template">
-    <!-- TODO pb centrage -->
     <div class="panel panel-default" style="width: 95%">
         <div class="panel-heading">
-            <h3 class="panel-title">{{name}} - 2</h3>
+            <h3 class="panel-title">{{name}} - {{nbTapis}}</h3>
         </div>
         <div class="panel-body">
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default" title="addon"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-                <button type="button" class="btn btn-default" title="cave"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></button>
-                <button type="button" class="btn btn-default" title="quit"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                <button type="button" class="btn btn-default {{disable}}" {{disable}} title="addon" onclick="$.Oda.App.Controler.LiveContest.addAddon({userId:{{userId}}})"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+                <button type="button" class="btn btn-default {{disable}}" {{disable}} title="cave" onclick="$.Oda.App.Controler.LiveContest.addCave({userId:{{userId}}})"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></button>
+                <button type="button" class="btn btn-default {{disable}}" {{disable}} title="quit" onclick="$.Oda.App.Controler.LiveContest.out({userId:{{userId}}})"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
             </div>
         </div>
     </div>

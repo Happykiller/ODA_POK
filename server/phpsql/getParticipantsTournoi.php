@@ -18,7 +18,7 @@ $INTERFACE = new PokInterface($params);
 
 //--------------------------------------------------------------------------
 $params = new OdaPrepareReqSql();
-$params->sql = "SELECT a.*, b.*, (select count(*) 
+$params->sql = "SELECT a.*, b.`code_user`, b.`nom`, b.`prenom`, (select count(*)
         from `tab_participants_tapis` c 
         where 1=1
         AND c.id_tournoi = ".$INTERFACE->inputs["id_tournoi"]." 
