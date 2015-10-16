@@ -669,7 +669,13 @@
 
                         $.Oda.App.Controler.currentContest = $.Oda.Storage.get("currentContest", {id:$.Oda.Router.current.args.id});
 
+                        $.Oda.App.Controler.LiveContest.loadStats();
                         $.Oda.App.Controler.LiveContest.loadPlayers();
+
+
+                        setInterval(function(){
+                            $.Oda.App.Controler.LiveContest.loadClock();
+                        },1000);
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.LiveContest.start : " + er.message);
@@ -757,6 +763,81 @@
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.LiveContest.out : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.Controler.LiveContest}
+                 */
+                loadStats : function (p_params) {
+                    try {
+                        var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getInfosLive.php", {functionRetour : function(response) {
+                            var dateTimeDepart = response["data"]["strSebutDecompte"];
+                            var intRestantSeconde = parseInt(response["data"]["strTempsRestantSeconde"]);
+                            var intDecompte = parseInt(response["data"]["strDecompte"]);
+                            var g_etatTimer = response["data"]["strEtatDecompte"];
+                            if(g_etatTimer == "encours"){
+                                var g_decompte = intDecompte;
+                            }else{
+                                var g_decompte = intRestantSeconde;
+                            }
+                            var g_round = parseInt(response["data"]["strRoundEnCours"]);
+
+                            var intNbJetonsTapis = 0;
+                            intNbJetonsTapis = parseInt(response["data"]["strNbJetonsTapis"]);
+
+                            var intNbTapis = 0;
+                            intNbTapis = parseInt(response["data"]["strNbTapis"]);
+
+                            var intNbParticpantsActif = 0;
+                            intNbParticpantsActif = parseInt(response["data"]["strNbParticipant"]);
+
+                            var intTapisMoyen = 0;
+                            intTapisMoyen = Math.round((intNbJetonsTapis*intNbTapis)/intNbParticpantsActif);
+
+                            var intValeurTapis = 0;
+                            intValeurTapis = parseInt(response["data"]["strValeurTapis"]);
+
+                            var int50 = 0;
+                            int50 = Math.round((intValeurTapis*intNbTapis)*0.5);
+
+                            var int30 = 0;
+                            int30 = Math.round((intValeurTapis*intNbTapis)*0.3);
+
+                            var int20 = 0;
+                            int20 = Math.round((intValeurTapis*intNbTapis)*0.2);
+
+                            var dateDebut = "";
+                            dateDebut = response["data"]["strDateDebut"];
+
+                            $('#tm').html(intTapisMoyen);
+                            $('#nbTapis').html(intNbTapis);
+                            $('#50').html(int50);
+                            $('#30').html(int30);
+                            $('#20').html(int20);
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.Controler.LiveContest.loadStats : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.LiveContest}
+                 */
+                loadClock : function (p_params) {
+                    try {
+                        var strHtml = $.Oda.Date.getStrDateTime();
+
+                        $('#date').html(strHtml);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.LiveContest.loadClock : " + er.message);
                         return null;
                     }
                 },

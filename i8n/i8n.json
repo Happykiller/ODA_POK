@@ -79,10 +79,26 @@
     {
         "groupName" : "liveContest",
         "fr" : {
-            "title" : "Direct"
+            "title" : "Direct",
+            "labelTM" : "Tapis moyen",
+            "labelNbtapis" : "Nombre de tapis",
+            "label50" : "50%",
+            "label30" : "30%",
+            "label20" : "20%",
+            "labelStartDate" : "Date début",
+            "labelDate" : "Date",
+            "labelEndDate" : "Date fin"
         },
         "en" : {
-            "title" : "Live"
+            "title" : "Live",
+            "labelTM" : "Tapis average",
+            "labelNbtapis" : "Num tapis",
+            "label50" : "50%",
+            "label30" : "30%",
+            "label20" : "20%",
+            "labelStartDate" : "Start date",
+            "labelDate" : "Date",
+            "labelEndDate" : "End date"
         }
     }
 ]
