@@ -100,5 +100,16 @@
             "labelDate" : "Date",
             "labelEndDate" : "End date"
         }
+    },
+    {
+        "groupName" : "rulesContest",
+        "fr" : {
+            "Lexicon" : "Lexique",
+            "hands" : "Les mains"
+        },
+        "en" : {
+            "Lexicon" : "Lexicon",
+            "hands" : "Hands"
+        }
     }
 ]

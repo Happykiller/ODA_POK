@@ -68,6 +68,20 @@
                     "middleWares" : ["support","auth"]
                 });
 
+                $.Oda.Router.addRoute("histoContest", {
+                    "path" : "partials/histoContest.html",
+                    "title" : "histoContest.title",
+                    "urls" : ["tournoi_histo"],
+                    "middleWares" : ["support","auth"]
+                });
+
+                $.Oda.Router.addRoute("rulesContest", {
+                    "path" : "partials/rulesContest.html",
+                    "title" : "rulesContest.title",
+                    "urls" : ["tournoi_rules"],
+                    "middleWares" : ["support","auth"]
+                });
+
                 $.Oda.Router.startRooter();
 
                 return this;
@@ -653,6 +667,8 @@
             LiveContest : {
                 etatTimer : "",
                 decompte : 0,
+                timer : null,
+                display : "small",
                 /**
                  * @param {Object} p_params
                  * @param p_params.id
@@ -694,8 +710,10 @@
                             var dataRetour = response.data.resultat.data;
                             for (var indice in dataRetour) {
                                 var strDisable = "";
+                                var strBackGroudOut = "oda-panel-in";
                                 if(dataRetour[indice].roundFin !== "0"){
                                     strDisable = "disabled";
+                                    strBackGroudOut = "oda-panel-out";
                                 }
 
                                 var strHtml = $.Oda.Display.TemplateHtml.create({
@@ -705,7 +723,8 @@
                                         name : dataRetour[indice].prenom + "." + dataRetour[indice].nom.substring(0, 1),
                                         nbTapis : dataRetour[indice].nb_tapis,
                                         idTournois : $.Oda.App.Controler.currentContest.id,
-                                        userId : dataRetour[indice].id_user
+                                        userId : dataRetour[indice].id_user,
+                                        backgroudOut : strBackGroudOut
                                     }
                                 });
                                 $('#set' + (parseInt(indice) + 1)).html(strHtml);
@@ -780,7 +799,6 @@
                     try {
                         var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getInfosLive.php", {functionRetour : function(response) {
-                            var dateTimeDepart = response["data"]["strSebutDecompte"];
                             var strDateDebut = response["data"]["strDateDebut"];
                             var strDateFin = response["data"]["strDateFin"];
                             var strTitre = response["data"]["strTitre"];
@@ -812,11 +830,11 @@
                             var dateDebut = "";
                             dateDebut = response["data"]["strDateDebut"];
 
-                            $('#big').html("Big: "+response["data"]["strSmall_blind"]);
+                            $('#big').html("B: <b>"+response["data"]["strSmall_blind"]+"</b>");
 
-                            $('#small').html("Small: "+response["data"]["strBig_blind"]);
+                            $('#small').html("S: <b>"+response["data"]["strBig_blind"]+"</b>");
 
-                            var strAnte = "Ante: "+response["data"]["strAnte"];
+                            var strAnte = "Ante: <b>"+response["data"]["strAnte"]+"</b>";
                             if(response["data"]["strAnte"] === "0"){
                                 strAnte = "";
                             }
@@ -828,7 +846,7 @@
                             $('#30').html(int30+'&euro;');
                             $('#20').html(int20+'&euro;');
                             $('#startDate').html(strDateDebut);
-                            $('#endDate').html(strDateDebut);
+                            $('#endDate').html(strDateFin);
                             $('#nameContest').html(strTitre);
                         }}, tabInput);
                         return this;
@@ -856,9 +874,158 @@
                  */
                 loadClockContest : function (p_params) {
                     try {
+                        var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getInfosLive.php", {functionRetour : function(response) {
+                            var dateTimeDepart = response["data"]["strSebutDecompte"];
+                            var intDecompte = parseInt(response["data"]["strDecompte"]);
+                            var intRestantSeconde = parseInt(response["data"]["strTempsRestantSeconde"]);
+                            $.Oda.App.Controler.LiveContest.etatTimer = response["data"]["strEtatDecompte"];
+                            if($.Oda.App.Controler.LiveContest.etatTimer === "encours"){
+                                $.Oda.App.Controler.LiveContest.decompte = intDecompte;
+                            }else{
+                                $.Oda.App.Controler.LiveContest.decompte = intRestantSeconde;
+                            }
+                            $.Oda.App.Controler.LiveContest.round = parseInt(response["data"]["strRoundEnCours"]);
+
+                            $("#round").html("N: <b>"+$.Oda.App.Controler.LiveContest.round+"</b>");
+                            $("#roundTime").html("T: <b>"+$.Oda.Date.convertSecondsToTime($.Oda.App.Controler.LiveContest.decompte).substr(3)+"</b>");
+
+                            switch ($.Oda.App.Controler.LiveContest.etatTimer) {
+                                case "init":
+                                    $("#start").show();
+                                    $("#stop").hide();
+                                    $("#pause").hide();
+                                    break;
+                                case "pause":
+                                    $("#start").show();
+                                    $("#stop").show();
+                                    $("#pause").hide();
+                                    break;
+                                case "stop":
+                                    $("#start").hide();
+                                    $("#stop").hide();
+                                    $("#pause").hide();
+                                    break;
+                                case "encours":
+                                    $("#start").hide();
+                                    $("#stop").show();
+                                    $("#pause").show();
+                                    clearInterval($.Oda.App.Controler.LiveContest.timer);
+                                    $.Oda.App.Controler.LiveContest.timer = setInterval(function(){
+                                        $.Oda.App.Controler.LiveContest.loadDecompte();
+                                    },1000);
+                                    break;
+                            }
+                        }}, tabInput);
+
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.LiveContest.loadClockContest : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {String} p_action
+                 * @returns {$.Oda.App.Controler.LiveContest}
+                 */
+                actionDecompte : function (p_action) {
+                    try {
+                        switch (p_action) {
+                            case 'start':
+                                var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id, action : 'start' };
+                                var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/actionDecompte.php", {functionRetour : function(response) {
+                                    $.Oda.App.Controler.LiveContest.loadStats();
+                                    $.Oda.App.Controler.LiveContest.loadClockContest();
+                                }}, tabInput);
+                                break;
+                            case 'pause':
+                                var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id, action : 'pause' };
+                                var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/actionDecompte.php", {functionRetour : function(response) {
+                                    clearInterval($.Oda.App.Controler.LiveContest.timer);
+                                    $.Oda.App.Controler.LiveContest.loadStats();
+                                    $.Oda.App.Controler.LiveContest.loadClockContest();
+                                }}, tabInput);
+                                break;
+                            case 'stop':
+                                var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id, action : 'stop' };
+                                var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/actionDecompte.php", {functionRetour : function(response) {
+                                    clearInterval($.Oda.App.Controler.LiveContest.timer);
+                                    $.Oda.App.Controler.LiveContest.loadStats();
+                                    $.Oda.App.Controler.LiveContest.loadClockContest();
+                                }}, tabInput);
+                                break;
+                        }
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.LiveContest.actionDecompte : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @returns {$.Oda.App.Controler.LiveContest}
+                 */
+                loadDecompte : function () {
+                    try {
+                        $.Oda.App.Controler.LiveContest.decompte -= 1;
+
+                        $("#roundTime").html("T: <b>"+$.Oda.Date.convertSecondsToTime($.Oda.App.Controler.LiveContest.decompte).substr(3)+"</b>");
+
+                        if($.Oda.App.Controler.LiveContest.decompte === 0){
+                            clearInterval($.Oda.App.Controler.LiveContest.timer);
+                            var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id, action : 'upRound' };
+                            var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/actionDecompte.php", {functionRetour : function(response) {
+                                $.Oda.App.Controler.LiveContest.loadStats();
+                                $.Oda.App.Controler.LiveContest.loadClockContest();
+                                $.Oda.App.Controler.LiveContest.timer = setInterval(function(){
+                                    $.Oda.App.Controler.LiveContest.loadDecompte();
+                                },1000);
+                            }}, tabInput);
+                        }
+
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.LiveContest.loadDecompte : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @returns {$.Oda.App.Controler.LiveContest}
+                 */
+                changeDisplay : function () {
+                    try {
+                        if($.Oda.App.Controler.LiveContest.display === "full"){
+                            $.Oda.App.Controler.LiveContest.display = "small";
+                            $("#display").removeClass("glyphicon-resize-small");
+                            $("#display").addClass("glyphicon-resize-full");
+                            $("#title").show();
+                            $("#menu-tabs").show();
+                            $("nav").show();
+                        }else{
+                            $.Oda.App.Controler.LiveContest.display = "full";
+                            $("#display").removeClass("glyphicon-resize-full");
+                            $("#display").addClass("glyphicon-resize-small");
+                            $("#title").hide();
+                            $("#menu-tabs").hide();
+                            $("nav").hide();
+                        }
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.LiveContest.changeDisplay : " + er.message);
+                        return null;
+                    }
+                },
+            },
+            HistoContest : {
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.HistoContest}
+                 */
+                start : function (p_params) {
+                    try {
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.HistoContest.start : " + er.message);
                         return null;
                     }
                 },

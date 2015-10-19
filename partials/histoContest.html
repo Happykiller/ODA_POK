@@ -1,0 +1,41 @@
+<div class="container">
+    <h2 oda-label="detailsContest.histo" id="title">detailsContest.histo</h2>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist" id="menu-tabs">
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_param',args:{}});" role="tab" oda-label="detailsContest.details">detailsContest.details</a></li>
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_live',args:{}});" role="tab" oda-label="detailsContest.live">detailsContest.live</a></li>
+        <li role="presentation" class="active"><a href="" role="tab" oda-label="detailsContest.histo">detailsContest.histo</a></li>
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_rules',args:{}});" role="tab" oda-label="detailsContest.rules">detailsContest.rules</a></li>
+    </ul>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>
+                            <label oda-label="detailsContest.time">time</label>
+                        </th>
+                        <th>
+                            <label oda-label="detailsContest.smallBlind">smallBlind</label>
+                        </th>
+                        <th>
+                            <label oda-label="detailsContest.bigBlind">bigBlind</label>
+                        </th>
+                        <th>
+                            <label oda-label="detailsContest.ante">ante</label>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{tbody}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $.Oda.App.Controler.HistoContest.start();
+</script>
