@@ -111,5 +111,22 @@
             "Lexicon" : "Lexicon",
             "hands" : "Hands"
         }
+    },
+    {
+        "groupName" : "histoContest",
+        "fr" : {
+            "place" : "Place",
+            "firstName" : "Nom",
+            "lastName" : "Prénom",
+            "end" : "Fin",
+            "endRound" : "Round final"
+        },
+        "en" : {
+            "place" : "Place",
+            "firstName" : "First name",
+            "lastName" : "Last name",
+            "end" : "End",
+            "endRound" : "Final round"
+        }
     }
 ]

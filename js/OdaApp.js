@@ -1023,6 +1023,28 @@
                  */
                 start : function (p_params) {
                     try {
+                        if($.Oda.Router.current.args.hasOwnProperty("id")){
+                            $.Oda.Storage.set("currentContest-"+ $.Oda.Session.code_user,{id:$.Oda.Router.current.args.id});
+                        }else{
+                            if($.Oda.Storage.get("currentContest-"+ $.Oda.Session.code_user) === null){
+                                $.Oda.Router.navigateTo({'route':'home',args:{}})
+                                throw {message : "Id tournois unknow."};
+                            }
+                        }
+
+                        $.Oda.App.Controler.currentContest = $.Oda.Storage.get("currentContest", {id:$.Oda.Router.current.args.id});
+
+                        var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getHisto.php", {functionRetour : function(response) {
+                            for(var indice in response.data.resultat.data){
+                                var elt = response.data.resultat.data[indice];
+                                var strHtml = "<tr>";
+                                strHtml += '<td>'+elt.place+'</td><td>'+elt.nom+'</td><td>'+elt.prenom+'</td><td>'+elt.fin+'</td><td>'+elt.roundFin+'</td>'
+                                strHtml += "</tr>";
+                                $("#tabHisto tbody").append(strHtml);
+                            }
+                        }}, tabInput);
+
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.HistoContest.start : " + er.message);
