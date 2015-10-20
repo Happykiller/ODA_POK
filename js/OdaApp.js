@@ -122,7 +122,7 @@
                             var oTable = $('#tabTournoisFini').DataTable( {
                                 "sPaginationType": "full_numbers",
                                 "aaData": objDataTable.data,
-                                "aaSorting": [[1,'desc']],
+                                "aaSorting": [[0,'desc']],
                                 "aoColumns": [
                                     { "sTitle": "Id","sClass": "center" },
                                     { "sTitle": "Titre","sClass": "center" },
@@ -189,7 +189,7 @@
                             var oTable = $('#tabTournoisEnCours').DataTable( {
                                 "sPaginationType": "full_numbers",
                                 "aaData": objDataTable.data,
-                                "aaSorting": [[1,'desc']],
+                                "aaSorting": [[0,'desc']],
                                 "aoColumns": [
                                     { "sTitle": "Id","sClass": "center" },
                                     { "sTitle": "Titre","sClass": "center" },
@@ -307,7 +307,9 @@
                             }
                         }
 
-                        $.Oda.App.Controler.currentContest = $.Oda.Storage.get("currentContest", {id:$.Oda.Router.current.args.id});
+                        $.Oda.App.Controler.currentContest = $.Oda.Storage.get("currentContest-"+ $.Oda.Session.code_user);
+
+                        $("#numContest").html("n&deg;"+ $.Oda.App.Controler.currentContest.id);
 
                         var tabInput = { table : 'tab_tournois', get : '{"champ":"titre","type":"PARAM_STR"}', filtre : '{"champ":"id","valeur":"'+ $.Oda.App.Controler.currentContest.id +'","type":"PARAM_INT"}'};
 
@@ -393,12 +395,12 @@
                                                 strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.DetailsContest.backParticipant({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-warning btn-xs" title="revenir"><span class="glyphicon glyphicon-retweet" aria-hidden="true"></span></button>';
                                             }
                                             if (row[objDataTable.entete["nb_addon"]] !== '0') {
-                                                strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.DetailsContest.delAddonParticipant({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-warning btn-xs" title="retirer addon"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></button>';
+                                                strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.DetailsContest.delAddonParticipant({id:' + row[objDataTable.entete["id_user"]] + '})" class="btn btn-warning btn-xs" title="retirer addon"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></button>';
                                             }
                                             if (row[objDataTable.entete["nb_recave"]] !== '0') {
-                                                strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.DetailsContest.delCaveParticipant({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-warning btn-xs" title="retirer cave"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>';
+                                                strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.DetailsContest.delCaveParticipant({id:' + row[objDataTable.entete["id_user"]] + '})" class="btn btn-warning btn-xs" title="retirer cave"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>';
                                             }
-                                            strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.DetailsContest.delParticipant({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-danger btn-xs" title="delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>';
+                                            strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.DetailsContest.delParticipant({id:' + row[objDataTable.entete["id_user"]] + '})" class="btn btn-danger btn-xs" title="delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>';
                                             return strHtml;
                                         },
                                         "aTargets": [4]
@@ -443,6 +445,7 @@
                         var tabInput = { action : 'reinit', id_tournoi : $.Oda.App.Controler.currentContest.id };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/actionDecompte.php", {functionRetour: function(response){
                             $.Oda.Display.Notification.success("Remise à zéro r&eacute;ussi.");
+                            clearInterval($.Oda.App.Controler.LiveContest.timer);
                         }}, tabInput);
                         return this;
                     } catch (er) {
@@ -685,7 +688,7 @@
                             }
                         }
 
-                        $.Oda.App.Controler.currentContest = $.Oda.Storage.get("currentContest", {id:$.Oda.Router.current.args.id});
+                        $.Oda.App.Controler.currentContest = $.Oda.Storage.get("currentContest-"+ $.Oda.Session.code_user);
 
                         $.Oda.App.Controler.LiveContest.loadStats();
                         $.Oda.App.Controler.LiveContest.loadPlayers();
@@ -1032,7 +1035,7 @@
                             }
                         }
 
-                        $.Oda.App.Controler.currentContest = $.Oda.Storage.get("currentContest", {id:$.Oda.Router.current.args.id});
+                        $.Oda.App.Controler.currentContest = $.Oda.Storage.get("currentContest-"+ $.Oda.Session.code_user);
 
                         var tabInput = { id_tournoi : $.Oda.App.Controler.currentContest.id };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getHisto.php", {functionRetour : function(response) {

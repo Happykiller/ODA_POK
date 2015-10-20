@@ -40,7 +40,6 @@ $params->sql = "SELECT *
     ".$strFiltreAuteur."
     ".$strFiltreFini."
     ORDER BY `dateCreation` DESC
-    LIMIT 0 , 10
 ;";
 $params->typeSQL = OdaLibBd::SQL_GET_ALL;
 $retour = $INTERFACE->BD_ENGINE->reqODASQL($params);
