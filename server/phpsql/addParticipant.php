@@ -31,6 +31,6 @@ $params->typeSQL = OdaLibBd::SQL_INSERT_ONE;
 $retour = $INTERFACE->BD_ENGINE->reqODASQL($params);
 
 $params = new stdClass();
-$params->label = "resultat";
+$params->label = "result";
 $params->value = $retour->data;
 $INTERFACE->addDataStr($params);

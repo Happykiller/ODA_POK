@@ -128,5 +128,36 @@
             "end" : "End",
             "endRound" : "Final round"
         }
+    },
+    {
+        "groupName" : "chargesContest",
+        "fr" : {
+            "title" : "Charges tournois",
+            "expenditure" : "Dépenses",
+            "profit" : "Gains",
+            "balance" : "Balance",
+            "addCharges" : "Ajouter une charge pour",
+            "part" : "Part",
+            "cmt" : "Commentaires",
+            "cmt-tips" : "",
+            "cmt-placeholder" : "",
+            "amount" : "Montant",
+            "amount-tips" : "",
+            "amount-placeholder" : ""
+        },
+        "en" : {
+            "title" : "Contest charges",
+            "expenditure" : "Rxpenditure",
+            "profit" : "Profit",
+            "balance" : "Balance",
+            "part" : "Part",
+            "addCharges" : "Add a charge pour",
+            "cmt" : "Comment",
+            "cmt-tips" : "",
+            "cmt-placeholder" : "",
+            "amount" : "Amount",
+            "amount-tips" : "",
+            "amount-placeholder" : ""
+        }
     }
 ]

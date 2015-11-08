@@ -82,6 +82,14 @@
                     "middleWares" : ["support","auth"]
                 });
 
+                $.Oda.Router.addRoute("chargesContest", {
+                    "path" : "partials/chargesContest.html",
+                    "title" : "chargesContest.title",
+                    "urls" : ["chargesContest"],
+                    "middleWares" : ["support","auth"],
+                    "dependencies" : ["dataTables"]
+                });
+
                 $.Oda.Router.startRooter();
 
                 return this;
@@ -1051,6 +1059,236 @@
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.HistoContest.start : " + er.message);
+                        return null;
+                    }
+                },
+            },
+            ChargesContest : {
+                /**
+                 * @returns {$.Oda.App.Controler.ChargesContest}
+                 */
+                start: function () {
+                    try {
+                        if($.Oda.Router.current.args.hasOwnProperty("id")){
+                            $.Oda.Storage.set("currentContest-"+ $.Oda.Session.code_user,{id:$.Oda.Router.current.args.id});
+                        }else{
+                            if($.Oda.Storage.get("currentContest-"+ $.Oda.Session.code_user) === null){
+                                $.Oda.Router.navigateTo({'route':'home',args:{}})
+                                throw {message : "Id tournois unknow."};
+                            }
+                        }
+
+                        $.Oda.App.Controler.currentContest = $.Oda.Storage.get("currentContest-"+ $.Oda.Session.code_user);
+
+                        $.Oda.App.Controler.ChargesContest.displayUsers();
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.start : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @returns {$.Oda.App.Controler.ChargesContest}
+                 */
+                displayUsers: function () {
+                    try {
+                        var tabInput = { idContest : $.Oda.App.Controler.currentContest.id };
+                        $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getUsersForCharges.php", {functionRetour : function(response) {
+                            var users = response.data.result.data;
+                            var nbGrid = Math.floor(users.length / 4)+1;
+                            var listContent = [];
+                            users.totalExpenditure = 0;
+                            $.each(users, function( index, user ) {
+                                var strExpenditure = "";
+                                user.totalExpenditure = 0;
+                                $.each(user.expenditure, function( index, value ) {
+                                    users.totalExpenditure += parseFloat(value.expenditure);
+                                    user.totalExpenditure += parseFloat(value.expenditure);
+                                    strExpenditure += value.expenditure + "&euro; : " + value.cmt + "<br>";
+                                });
+
+                                var strProfit = "";
+                                user.totalProfit = 0;
+                                $.each(user.profit, function( index, value ) {
+                                    user.totalProfit += parseFloat(value.profit);
+                                    strProfit += value.profit + "&euro; : " + value.cmt + "<br>";
+                                });
+
+                                var strHtml = $.Oda.Display.TemplateHtml.create({
+                                    template : "templatePostIt"
+                                    , scope : {
+                                        part : user.part,
+                                        expenditure : strExpenditure,
+                                        profit : strProfit,
+                                        balance : '<span id="blance-'+user.id+'"></span>&euro;',
+                                        author : user.prenom + "." + user.nom.substring(0,1),
+                                        id : user.id
+                                    }
+                                });
+                                listContent.push(strHtml);
+                            });
+                            var contribution = $.Oda.Tooling.arrondir(users.totalExpenditure / users.length,1);
+                            var strPostIts = "";
+                            for (var i = 0; i < nbGrid; i++) {
+                                var strHtml = $.Oda.Display.TemplateHtml.create({
+                                    template : "templateGrid"
+                                    , scope : {
+                                        elt1 : (listContent[i] !== undefined)?listContent[i]:"",
+                                        elt2 : (listContent[i+1] !== undefined)?listContent[i+1]:"",
+                                        elt3 : (listContent[i+2] !== undefined)?listContent[i+2]:"",
+                                        elt4 : (listContent[i+3] !== undefined)?listContent[i+3]:"",
+                                    }
+                                });
+                                strPostIts += strHtml;
+                            }
+                            $('#divPostIts').html(strPostIts);
+                            $.Oda.Log.trace(users);
+                            $.each(users, function( index, value ) {
+                                var balance = $.Oda.Tooling.arrondir(value.totalProfit - (contribution * value.part) + value.totalExpenditure,1);
+                                $('#blance-'+value.id).html(balance);
+                            });
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.displayUsers : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @returns {$.Oda.App.Controler.showUsers}
+                 */
+                showUsers: function () {
+                    try {
+                        $.Oda.Display.Popup.open({"label" : $.Oda.I8n.get('detailsContest','addParticipant'), "details" : '<div id="divListUser"><oda-loading></oda-loading></div>', callback : function(){
+                            var tabInput = { recherche : "", id_tournoi : $.Oda.App.Controler.currentContest.id };
+                            $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getParticipants.php", {functionRetour : function(response) {
+                                var strhtml = '<table cellpadding="0" cellspacing="0" border="0" class="display hover" id="tabListUser" style="width: 100%"></table>';
+                                $("#divListUser").html(strhtml);
+
+                                var objDataTable = $.Oda.Tooling.objDataTableFromJsonArray(response.data.resultat.data);
+                                var oTable = $('#tabListUser').DataTable({
+                                    "sPaginationType": "full_numbers",
+                                    "aaData": objDataTable.data,
+                                    "aaSorting": [[0, 'desc']],
+                                    "aoColumns": [
+                                        {"sTitle": "Nom", "sClass": "dataTableColCenter"},
+                                        {"sTitle": "Prénom", "sClass": "dataTableColCenter"},
+                                        {"sTitle": "Action"}
+                                    ],
+                                    "aoColumnDefs": [
+                                        {
+                                            "mRender": function (data, type, row) {
+                                                return row[objDataTable.entete["nom"]];
+                                            },
+                                            "aTargets": [0]
+                                        },
+                                        {
+                                            "mRender": function (data, type, row) {
+                                                return row[objDataTable.entete["prenom"]];
+                                            },
+                                            "aTargets": [1]
+                                        },
+                                        {
+                                            "mRender": function (data, type, row) {
+                                                var strHtml = '<button onclick="$.Oda.App.Controler.ChargesContest.addUser({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>';
+                                                return strHtml;
+                                            },
+                                            "aTargets": [2]
+                                        }
+                                    ],
+                                    "fnDrawCallback": function (oSettings) {
+                                        $('#tabListUser')
+                                            .removeClass('display')
+                                            .addClass('table table-striped table-bordered');
+                                    }
+                                });
+                            }}, tabInput);
+                        }, name : "popListUser"});
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.showUsers : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.ChargesContest}
+                 */
+                addUser: function (p_params) {
+                    try {
+                        var tabInput = { idUser : p_params.id, idContest : $.Oda.App.Controler.currentContest.id };
+                        $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/addUserForCharges.php", {functionRetour : function(response) {
+                            $.Oda.Display.Popup.close({name:"popListUser"});
+                            $.Oda.App.Controler.ChargesContest.displayUsers();
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.addUser : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {object} p_params
+                 * @param p_params.id
+                 * @param p_params.author
+                 * @returns {$.Oda.App.Controler.ChargesContest}
+                 */
+                addCharges: function (p_params) {
+                    try {
+
+                        var strHtml = $.Oda.Display.TemplateHtml.create({
+                            template : "templateFormAddCharges"
+                            , scope : {}
+                        });
+
+                        $.Oda.Display.Popup.open({
+                            "name" : "popAddCharges",
+                            "label" : $.Oda.I8n.get('chargesContest','addCharges') + " " + p_params.author,
+                            "details" : strHtml,
+                            "footer" : '<button type="button" oda-label="oda-main.bt-submit" oda-submit="submit" onclick="$.Oda.App.Controler.ChargesContest.submitCharges({id:'+p_params.id+'});" class="btn btn-primary disabled" disabled>Submit</button >',
+                            "callback" : function(){
+                                $.Oda.Scope.Gardian.add({
+                                    id : "addCharges",
+                                    listElt : ["cmt","amount"],
+                                    function : function(params){
+                                        if( ($("#cmt").data("isOk")) && ($("#amount").data("isOk")) ){
+                                            $("#submit").removeClass("disabled");
+                                            $("#submit").removeAttr("disabled");
+                                        }else{
+                                            $("#submit").addClass("disabled");
+                                            $("#submit").attr("disabled", true);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.addCharges : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.ChargesContest}
+                 */
+                submitCharges: function (p_params) {
+                    try {
+                        var tabInput = {
+                            idContestCharges : p_params.id,
+                            type : $('input[name=optionsRadios]:checked').val(),
+                            cmt : $('#cmt').val(),
+                            amount : $('#amount').val()
+                        };
+                        $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/addCharges.php", {functionRetour : function(response) {
+                            $.Oda.Display.Popup.close({name:"popAddCharges"});
+                            $.Oda.App.Controler.ChargesContest.displayUsers();
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.submitCharges : " + er.message);
                         return null;
                     }
                 },

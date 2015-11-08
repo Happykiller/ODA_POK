@@ -1,0 +1,154 @@
+<div class="container">
+    <h2 oda-label="detailsContest.rules" id="title">detailsContest.rules</h2>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist" id="menu-tabs">
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_param',args:{}});" role="tab" oda-label="detailsContest.details">detailsContest.details</a></li>
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_live',args:{}});" role="tab" oda-label="detailsContest.live">detailsContest.live</a></li>
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_histo',args:{}});" role="tab" oda-label="detailsContest.histo">detailsContest.histo</a></li>
+        <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_rules',args:{}});" role="tab" oda-label="detailsContest.rules">detailsContest.rules</a></li>
+        <li role="presentation" class="active"><a href="" role="tab" oda-label="chargesContest.title">chargesContest.title</a></li>
+    </ul>
+    <a href="javascript:$.Oda.App.Controler.ChargesContest.showUsers();" class="bt-add">+</a>
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="divPostIts"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .post-it {
+        color: #333;
+        position: relative;
+        font-weight: 600;
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #eae672;
+        box-shadow: 10px 10px 5px rgba(0,0,0,0.3);
+    }
+
+    .post-it .author {
+        display: block;
+        text-align: right;
+    }
+
+    .bt-add{
+        display:block;
+        width:50px;
+        height:50px;
+        border-radius:25px;
+        font-size:20px;
+        font-weight: 700;
+        color:#fff;
+        line-height:50px;
+        text-align:center;
+        background:#d23f31;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+        position: absolute;
+        right:    20px;
+        bottom:   20px;
+    }
+
+    .bt-add:link{
+        text-decoration: none;
+    }
+
+    .bt-add:hover{
+        color:#ccc;
+        text-decoration:none;
+        background:#333
+    }
+
+    .bt-addCharges{
+        display:block;
+        width:25px;
+        height:25px;
+        border-radius:10px;
+        font-size:15px;
+        font-weight: 700;
+        color:#fff;
+        line-height:25px;
+        text-align:center;
+        background: #2931d2;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+        position: absolute;
+        left:    10px;
+        bottom:   10px;
+    }
+
+    .bt-addCharges:link{
+        text-decoration: none;
+    }
+
+    .bt-addCharges:hover{
+        color:#ccc;
+        text-decoration:none;
+        background:#333
+    }
+</style>
+
+<script>
+    $.Oda.App.Controler.ChargesContest.start();
+</script>
+
+<script id="templateGrid" type="text/template">
+    <div class="row">
+        <div class="col-lg-3 col-sm-6 col-xs=12">
+            {{elt1}}
+        </div>
+        <div class="col-lg-3 col-sm-6 col-xs=12">
+            {{elt2}}
+        </div>
+        <div class="col-lg-3 col-sm-6 col-xs=12">
+            {{elt3}}
+        </div>
+        <div class="col-lg-3 col-sm-6 col-xs=12">
+            {{elt4}}
+        </div>
+    </div>
+</script>
+
+<script id="templatePostIt" type="text/template">
+    <div class="post-it">
+        <ul>
+            <li oda-label="chargesContest.part">chargesContest.part"</li>
+            {{part}}
+            <li oda-label="chargesContest.expenditure">chargesContest.expenditure"</li>
+            {{expenditure}}
+            <li oda-label="chargesContest.profit">chargesContest.profit"</li>
+            {{profit}}
+            <li style="list-style-type: none;">&nbsp;</li>
+            <li oda-label="chargesContest.balance">chargesContest.balance"</li>
+            {{balance}}
+        </ul>
+        <a href="javascript:$.Oda.App.Controler.ChargesContest.addCharges({ id : {{id}}, author : '{{author}}' });" class="bt-addCharges">+</a>
+        <cite class="author">{{author}}</cite>
+    </div>
+</script>
+
+<script id="templateFormAddCharges" type="text/template">
+    <span>Type : </span>
+    <div class="radio">
+        <label>
+            <input type="radio" name="optionsRadios" id="optionsRadios1" value="expenditure" checked>
+            <span oda-label="chargesContest.expenditure"></span>
+        </label>
+    </div>
+    <div class="radio">
+        <label>
+            <input type="radio" name="optionsRadios" id="optionsRadios2" value="profit">
+            <span oda-label="chargesContest.profit"></span>
+        </label>
+    </div>
+    </div>
+    <div class="form-group">
+        <label for="cmt" oda-label="chargesContest.cmt">cmt</label>*
+        <input required type="text" class="form-control" oda-input-text="cmt" oda-input-text-tips="chargesContest.cmt-tips"
+               oda-input-text-placeholder="chargesContest.cmt-placeholder" oda-input-text-check="Oda.Regexs:noInjection">
+    </div>
+    <div class="form-group">
+        <label for="amount" oda-label="chargesContest.amount">amount</label>*
+        <input required type="number" step="0.01" class="form-control" oda-input-text="amount" oda-input-text-tips="chargesContest.amount-tips"
+               oda-input-text-placeholder="chargesContest.amount-placeholder" oda-input-text-check="Oda.Regexs:noInjection">
+    </div>
+</script>
