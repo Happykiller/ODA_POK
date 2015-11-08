@@ -1142,7 +1142,6 @@
                                 strPostIts += strHtml;
                             }
                             $('#divPostIts').html(strPostIts);
-                            $.Oda.Log.trace(users);
                             $.each(users, function( index, value ) {
                                 var balance = $.Oda.Tooling.arrondir(value.totalProfit - (contribution * value.part) + value.totalExpenditure,1);
                                 $('#blance-'+value.id).html(balance);
