@@ -42,11 +42,12 @@
         color:#fff;
         line-height:50px;
         text-align:center;
-        background:#d23f31;
+        background:#2931d2;
         box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
         position: absolute;
         right:    20px;
         bottom:   20px;
+        z-index: 999;
     }
 
     .bt-add:link{
@@ -74,6 +75,7 @@
         position: absolute;
         left:    10px;
         bottom:   10px;
+        z-index: 999;
     }
 
     .bt-addCharges:link{
@@ -81,6 +83,34 @@
     }
 
     .bt-addCharges:hover{
+        color:#ccc;
+        text-decoration:none;
+        background:#333
+    }
+
+    .bt-del{
+        display:block;
+        width:25px;
+        height:25px;
+        border-radius:10px;
+        font-size:15px;
+        font-weight: 700;
+        color:#fff;
+        line-height:25px;
+        text-align:center;
+        background: #d23f31;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+        position: absolute;
+        right:    10px;
+        top:   10px;
+        z-index: 999;
+    }
+
+    .bt-del:link{
+        text-decoration: none;
+    }
+
+    .bt-del:hover{
         color:#ccc;
         text-decoration:none;
         background:#333
@@ -113,14 +143,14 @@
         <ul>
             <li oda-label="chargesContest.part">chargesContest.part"</li>
             {{part}}
-            <li oda-label="chargesContest.expenditure">chargesContest.expenditure"</li>
             {{expenditure}}
-            <li oda-label="chargesContest.profit">chargesContest.profit"</li>
             {{profit}}
+            {{loose}}
             <li style="list-style-type: none;">&nbsp;</li>
             <li oda-label="chargesContest.balance">chargesContest.balance"</li>
             {{balance}}
         </ul>
+        <a href="javascript:$.Oda.App.Controler.ChargesContest.del({ id : {{id}} });" class="bt-del">-</a>
         <a href="javascript:$.Oda.App.Controler.ChargesContest.addCharges({ id : {{id}}, author : '{{author}}' });" class="bt-addCharges">+</a>
         <cite class="author">{{author}}</cite>
     </div>
@@ -150,5 +180,26 @@
         <label for="amount" oda-label="chargesContest.amount">amount</label>*
         <input required type="number" step="0.01" class="form-control" oda-input-text="amount" oda-input-text-tips="chargesContest.amount-tips"
                oda-input-text-placeholder="chargesContest.amount-placeholder" oda-input-text-check="Oda.Regexs:noInjection">
+    </div>
+</script>
+
+<script id="templateEditPart" type="text/template">
+    <div class="form-group">
+        <label for="newPart" oda-label="chargesContest.part">part</label>*
+        <input required type="number" step="0.01" class="form-control" oda-input-text="newPart" oda-input-text-tips="chargesContest.newPart-tips"
+               oda-input-text-placeholder="chargesContest.newPart-placeholder" oda-input-text-check="Oda.Regexs:noInjection" value="{{value}}">
+    </div>
+</script>
+
+<script id="templateEditCharge" type="text/template">
+    <div class="form-group">
+        <label for="cmt" oda-label="chargesContest.cmt">cmt</label>*
+        <input required type="text" class="form-control" oda-input-text="cmt" oda-input-text-tips="chargesContest.cmt-tips"
+               oda-input-text-placeholder="chargesContest.cmt-placeholder" oda-input-text-check="Oda.Regexs:noInjection" value="{{cmt}}">
+    </div>
+    <div class="form-group">
+        <label for="amount" oda-label="chargesContest.amount">amount</label>*
+        <input required type="number" step="0.01" class="form-control" oda-input-text="amount" oda-input-text-tips="chargesContest.amount-tips"
+               oda-input-text-placeholder="chargesContest.amount-placeholder" oda-input-text-check="Oda.Regexs:noInjection" value="{{amount}}">
     </div>
 </script>

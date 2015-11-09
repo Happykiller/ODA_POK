@@ -34,3 +34,14 @@ $params = new stdClass();
 $params->label = "result";
 $params->value = $retour->data;
 $INTERFACE->addDataStr($params);
+
+//--------------------------------------------------------------------------
+$params = new OdaPrepareReqSql();
+$params->sql = "REPLACE INTO `tab_contest_charges`(`idContest`, `idUser`) VALUES (:idContest, :idUser)
+;";
+$params->bindsValue = [
+    "idContest" => $INTERFACE->inputs["id_tournoi"]
+    , "idUser" => $INTERFACE->inputs["id_user"]
+];
+$params->typeSQL = OdaLibBd::SQL_SCRIPT;
+$retour = $INTERFACE->BD_ENGINE->reqODASQL($params);

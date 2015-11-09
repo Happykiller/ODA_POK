@@ -135,6 +135,7 @@
             "title" : "Charges tournois",
             "expenditure" : "Dépenses",
             "profit" : "Gains",
+            "loose" : "Pertes",
             "balance" : "Balance",
             "addCharges" : "Ajouter une charge pour",
             "part" : "Part",
@@ -143,12 +144,15 @@
             "cmt-placeholder" : "",
             "amount" : "Montant",
             "amount-tips" : "",
-            "amount-placeholder" : ""
+            "amount-placeholder" : "",
+            "forBank" : "Pour la banque : ",
+            "forPlayer" : "Pour le joueur : "
         },
         "en" : {
             "title" : "Contest charges",
             "expenditure" : "Rxpenditure",
             "profit" : "Profit",
+            "loose" : "Loose",
             "balance" : "Balance",
             "part" : "Part",
             "addCharges" : "Add a charge pour",
@@ -157,7 +161,9 @@
             "cmt-placeholder" : "",
             "amount" : "Amount",
             "amount-tips" : "",
-            "amount-placeholder" : ""
+            "amount-placeholder" : "",
+            "forBank" : "For the bank : ",
+            "forPlayer" : "For the player : "
         }
     }
 ]

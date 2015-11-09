@@ -1094,40 +1094,65 @@
                     try {
                         var tabInput = { idContest : $.Oda.App.Controler.currentContest.id };
                         $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getUsersForCharges.php", {functionRetour : function(response) {
-                            var users = response.data.result.data;
-                            var nbGrid = Math.floor(users.length / 4)+1;
+                            var contestCharges = response.data.result.data;
+                            var nbGrid = Math.ceil(contestCharges.length / 4);
                             var listContent = [];
-                            users.totalExpenditure = 0;
-                            $.each(users, function( index, user ) {
+                            contestCharges.totalExpenditure = 0;
+                            $.each(contestCharges, function( index, contestCharge ) {
+                                var strPart = "";
+                                strPart += '<a href="javascript:$.Oda.App.Controler.ChargesContest.editPart({ id : '+ contestCharge.id +', value : '+contestCharge.part+', author : \''+(contestCharge.prenom + "." + contestCharge.nom.substring(0,1))+'\' });"><span class="glyphicon glyphicon-pencil"></span></a>';
+                                strPart += contestCharge.part;
+
                                 var strExpenditure = "";
-                                user.totalExpenditure = 0;
-                                $.each(user.expenditure, function( index, value ) {
-                                    users.totalExpenditure += parseFloat(value.expenditure);
-                                    user.totalExpenditure += parseFloat(value.expenditure);
-                                    strExpenditure += value.expenditure + "&euro; : " + value.cmt + "<br>";
+                                contestCharge.totalExpenditure = 0;
+                                $.each(contestCharge.expenditure, function( index, value ) {
+                                    contestCharges.totalExpenditure += parseFloat(value.expenditure);
+                                    contestCharge.totalExpenditure += parseFloat(value.expenditure);
+                                    strExpenditure += '<a href="javascript:$.Oda.App.Controler.ChargesContest.editCharge({ id : '+ value.id +', cmt : \''+value.cmt+'\', value : '+value.expenditure+', type : \'expenditure\', author : \''+(contestCharge.prenom + "." + contestCharge.nom.substring(0,1))+'\' });"><span class="glyphicon glyphicon-pencil"></span></a>' + value.expenditure + "&euro; : " + value.cmt + "<br>";
                                 });
+                                if(strExpenditure.length>0){
+                                    var str = "";
+                                    str += '<li oda-label="chargesContest.expenditure">chargesContest.expenditure"</li>';
+                                    str += strExpenditure;
+                                    strExpenditure = str;
+                                }
 
                                 var strProfit = "";
-                                user.totalProfit = 0;
-                                $.each(user.profit, function( index, value ) {
-                                    user.totalProfit += parseFloat(value.profit);
-                                    strProfit += value.profit + "&euro; : " + value.cmt + "<br>";
+                                contestCharge.totalProfit = 0;
+                                $.each(contestCharge.profit, function( index, value ) {
+                                    contestCharge.totalProfit += parseFloat(value.profit);
+                                    strProfit += '<a href="javascript:$.Oda.App.Controler.ChargesContest.editCharge({ id : '+ value.id +', cmt : \''+value.cmt+'\', value : '+value.profit+', type : \'profit\', author : \''+(contestCharge.prenom + "." + contestCharge.nom.substring(0,1))+'\' });"><span class="glyphicon glyphicon-pencil"></span></a>' + value.profit + "&euro; : " + value.cmt + "<br>";
                                 });
+
+                                if(strProfit.length>0){
+                                    var str = "";
+                                    str += '<li oda-label="chargesContest.profit">chargesContest.profit"</li>';
+                                    str += strProfit;
+                                    strProfit = str;
+                                }
+
+                                var strLoose = "";
+                                contestCharge.loose = parseInt(contestCharge.nbTapis)*5;
+                                if(contestCharge.loose !== 0){
+                                    strLoose += contestCharge.loose+'&euro;';
+                                }
+                                strLoose = (strLoose.length>0)?'<li oda-label="chargesContest.loose">chargesContest.loose"</li>'+strLoose:"";
 
                                 var strHtml = $.Oda.Display.TemplateHtml.create({
                                     template : "templatePostIt"
                                     , scope : {
-                                        part : user.part,
+                                        part : strPart,
                                         expenditure : strExpenditure,
                                         profit : strProfit,
-                                        balance : '<span id="blance-'+user.id+'"></span>&euro;',
-                                        author : user.prenom + "." + user.nom.substring(0,1),
-                                        id : user.id
+                                        balance : '<span id="blance-'+contestCharge.id+'"></span>&euro;',
+                                        author : contestCharge.prenom + "." + contestCharge.nom.substring(0,1),
+                                        id : contestCharge.id,
+                                        loose : strLoose
                                     }
                                 });
                                 listContent.push(strHtml);
                             });
-                            var contribution = $.Oda.Tooling.arrondir(users.totalExpenditure / users.length,1);
+                            var contribution = $.Oda.Tooling.arrondir(contestCharges.totalExpenditure / contestCharges.length,1);
                             var strPostIts = "";
                             for (var i = 0; i < nbGrid; i++) {
                                 var strHtml = $.Oda.Display.TemplateHtml.create({
@@ -1136,15 +1161,19 @@
                                         elt1 : (listContent[i] !== undefined)?listContent[i]:"",
                                         elt2 : (listContent[i+1] !== undefined)?listContent[i+1]:"",
                                         elt3 : (listContent[i+2] !== undefined)?listContent[i+2]:"",
-                                        elt4 : (listContent[i+3] !== undefined)?listContent[i+3]:"",
+                                        elt4 : (listContent[i+3] !== undefined)?listContent[i+3]:""
                                     }
                                 });
                                 strPostIts += strHtml;
                             }
                             $('#divPostIts').html(strPostIts);
-                            $.each(users, function( index, value ) {
-                                var balance = $.Oda.Tooling.arrondir(value.totalProfit - (contribution * value.part) + value.totalExpenditure,1);
-                                $('#blance-'+value.id).html(balance);
+                            $.each(contestCharges, function( index, value ) {
+                                var balance = $.Oda.Tooling.arrondir(value.totalProfit - (contribution * value.part) - value.loose + value.totalExpenditure,1);
+                                if(balance >= 0){
+                                    $('#blance-'+value.id).html($.Oda.I8n.getByString('chargesContest.forPlayer') + balance);
+                                }else{
+                                    $('#blance-'+value.id).html($.Oda.I8n.getByString('chargesContest.forBank') + Math.abs(balance));
+                                }
                             });
                         }}, tabInput);
                         return this;
@@ -1235,7 +1264,6 @@
                  */
                 addCharges: function (p_params) {
                     try {
-
                         var strHtml = $.Oda.Display.TemplateHtml.create({
                             template : "templateFormAddCharges"
                             , scope : {}
@@ -1288,6 +1316,185 @@
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.submitCharges : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.ChargesContest}
+                 */
+                del: function (p_params) {
+                    try {
+                        var tabInput = { idContestCharges : p_params.id };
+                        $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/delUserForCharges.php", {functionRetour : function(response) {
+                            $.Oda.App.Controler.ChargesContest.displayUsers();
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.del : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.ChargesContest}
+                 */
+                editPart: function (p_params) {
+                    try {
+                        var strHtml = $.Oda.Display.TemplateHtml.create({
+                            template : "templateEditPart"
+                            , scope : {
+                                value : p_params.value
+                            }
+                        });
+
+                        $.Oda.Display.Popup.open({
+                            "name" : "popEditPart",
+                            "label" : $.Oda.I8n.get('chargesContest','part') + ", " + p_params.author,
+                            "details" : strHtml,
+                            "footer" : '<button type="button" oda-label="oda-main.bt-submit" oda-submit="submit" onclick="$.Oda.App.Controler.ChargesContest.submitEditPart({id:'+p_params.id+'});" class="btn btn-primary disabled" disabled>Submit</button >',
+                            "callback" : function(){
+                                $.Oda.Scope.Gardian.add({
+                                    id : "gEditPart",
+                                    listElt : ["newPart"],
+                                    function : function(params){
+                                        if( ($("#newPart").data("isOk")) ){
+                                            $("#submit").removeClass("disabled");
+                                            $("#submit").removeAttr("disabled");
+                                        }else{
+                                            $("#submit").addClass("disabled");
+                                            $("#submit").attr("disabled", true);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.editPart : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {object} p_params
+                 * @param p_params.id
+                 * @param p_params.author
+                 * @param p_params.value
+                 * @returns {$.Oda.App.Controler.ChargesContest}
+                 */
+                submitEditPart: function (p_params) {
+                    try {
+                        var tabInput = {
+                            table : 'tab_contest_charges',
+                            set : {"champ":"part","valeur": $('#newPart').val(),"type":"PARAM_DOUBLE"},
+                            filtre : {"champ":"id","valeur":p_params.id,"type":"PARAM_INT"}
+                        };
+                        $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/setter.php", {functionRetour : function(response) {
+                            $.Oda.Display.Popup.close({name:"popEditPart"});
+                            $.Oda.App.Controler.ChargesContest.displayUsers();
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.submitEditPart : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {object} p_params
+                 * @param p_params.id
+                 * @param p_params.author
+                 * @param p_params.value
+                 * @param p_params.cmt
+                 * @param p_params.type
+                 * @returns {$.Oda.App.Controler.ChargesContest}
+                 */
+                editCharge: function (p_params) {
+                    try {
+                        var strHtml = $.Oda.Display.TemplateHtml.create({
+                            template : "templateEditCharge"
+                            , scope : {
+                                id : p_params.id,
+                                author : p_params.author,
+                                cmt : p_params.cmt,
+                                type : p_params.type,
+                                amount : p_params.value
+                            }
+                        });
+
+                        $.Oda.Display.Popup.open({
+                            "name" : "popEditCharge",
+                            "label" : $.Oda.I8n.get('chargesContest',p_params.type) + ", " + p_params.author,
+                            "details" : strHtml,
+                            "footer" : '<button type="button" oda-label="oda-main.bt-delete" onclick="$.Oda.App.Controler.ChargesContest.submitDelCharge({id:'+p_params.id+'});" class="btn btn-danger">delete</button ><button type="button" oda-label="oda-main.bt-submit" oda-submit="submit" onclick="$.Oda.App.Controler.ChargesContest.submitEditCharge({id:'+p_params.id+', type : \''+p_params.type+'\'});" class="btn btn-primary disabled" disabled>Submit</button >',
+                            "callback" : function(){
+                                $.Oda.Scope.Gardian.add({
+                                    id : "gEditCharge",
+                                    listElt : ["cmt","amount"],
+                                    function : function(params){
+                                        if( ($("#cmt").data("isOk")) && ($("#amount").data("isOk")) ){
+                                            $("#submit").removeClass("disabled");
+                                            $("#submit").removeAttr("disabled");
+                                        }else{
+                                            $("#submit").addClass("disabled");
+                                            $("#submit").attr("disabled", true);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.editCharge : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {object} p_params
+                 * @param p_params.id
+                 * @param p_params.type
+                 * @returns {$.Oda.App.Controler.ChargesContest}
+                 */
+                submitEditCharge: function (p_params) {
+                    try {
+                        var tabInput = {
+                            table : 'tab_contest_charges_details',
+                            set : {"champ":p_params.type,"valeur": $('#amount').val(),"type":"PARAM_DOUBLE"},
+                            filtre : {"champ":"id","valeur":p_params.id,"type":"PARAM_INT"}
+                        };
+                        $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/setter.php", {functionRetour : function(response) {
+                            var tabInput = {
+                                table : 'tab_contest_charges_details',
+                                set : {"champ":"cmt","valeur": $('#cmt').val(),"type":"PARAM_STR"},
+                                filtre : {"champ":"id","valeur":p_params.id,"type":"PARAM_INT"}
+                            };
+                            $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/setter.php", {functionRetour : function(response) {
+                                $.Oda.Display.Popup.close({name:"popEditCharge"});
+                                $.Oda.App.Controler.ChargesContest.displayUsers();
+                            }}, tabInput);
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.submitEditCharge : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.ChargesContest}
+                 */
+                submitDelCharge: function (p_params) {
+                    try {
+                        var tabInput = { idCharge : p_params.id };
+                        $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/delCharge.php", {functionRetour : function(response) {
+                            $.Oda.Display.Popup.close({name:"popEditCharge"});
+                            $.Oda.App.Controler.ChargesContest.displayUsers();
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.ChargesContest.submitDelCharge : " + er.message);
                         return null;
                     }
                 },

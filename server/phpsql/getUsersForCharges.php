@@ -18,7 +18,7 @@ $INTERFACE = new PokInterface($params);
 
 //--------------------------------------------------------------------------
 $params = new OdaPrepareReqSql();
-$params->sql = "SELECT a.`id`, b.`nom`, b.`prenom`, a.`part`
+$params->sql = "SELECT a.`id`, b.`nom`, b.`prenom`, a.`part`, a.`idUser`
     FROM `tab_contest_charges` a, `api_tab_utilisateurs` b
     WHERE 1=1
     AND a.`idUser` = b.`id`
@@ -32,7 +32,7 @@ $retour = $INTERFACE->BD_ENGINE->reqODASQL($params);
 
 foreach ($retour->data->data as $value) {
     $params = new OdaPrepareReqSql();
-    $params->sql = "SELECT a.`cmt`, a.`expenditure`
+    $params->sql = "SELECT a.`id`, a.`cmt`, a.`expenditure`
         FROM `tab_contest_charges_details` a
         WHERE 1=1
         AND a.`idContestCharges` = :idContestCharges
@@ -46,7 +46,7 @@ foreach ($retour->data->data as $value) {
     $value->expenditure = $expenditure->data->data;
 
     $params = new OdaPrepareReqSql();
-    $params->sql = "SELECT a.`cmt`, a.`profit`
+    $params->sql = "SELECT a.`id`, a.`cmt`, a.`profit`
         FROM `tab_contest_charges_details` a
         WHERE 1=1
         AND a.`idContestCharges` = :idContestCharges
@@ -58,6 +58,21 @@ foreach ($retour->data->data as $value) {
     $params->typeSQL = OdaLibBd::SQL_GET_ALL;
     $profit = $INTERFACE->BD_ENGINE->reqODASQL($params);
     $value->profit = $profit->data->data;
+
+    $params = new OdaPrepareReqSql();
+    $params->sql = "SELECT count(*) as 'nb'
+        FROM `tab_participants_tapis` a
+        WHERE 1=1
+        AND a.`id_tournoi` = :idContest
+        AND a.`id_user` = :idUser
+    ;";
+    $params->bindsValue = [
+        "idContest" => $INTERFACE->inputs["idContest"],
+        "idUser" => $value->idUser
+    ];
+    $params->typeSQL = OdaLibBd::SQL_GET_ONE;
+    $nbTapis = $INTERFACE->BD_ENGINE->reqODASQL($params);
+    $value->nbTapis = $nbTapis->data->nb;
 }
 
 $params = new stdClass();
