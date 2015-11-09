@@ -319,7 +319,7 @@
 
                         $("#numContest").html("n&deg;"+ $.Oda.App.Controler.currentContest.id);
 
-                        var tabInput = { table : 'tab_tournois', get : '{"champ":"titre","type":"PARAM_STR"}', filtre : '{"champ":"id","valeur":"'+ $.Oda.App.Controler.currentContest.id +'","type":"PARAM_INT"}'};
+                        var tabInput = { table : 'tab_tournois', get : {"champ":"titre","type":"PARAM_STR"}, filtre : {"champ":"id","valeur":$.Oda.App.Controler.currentContest.id,"type":"PARAM_INT"}};
 
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getter.php", {functionRetour: function(response){
                             $("#name").val(response.data.resultat.champ);
@@ -434,7 +434,7 @@
                  */
                 submitParam : function (p_params) {
                     try {
-                        var tabInput = { table : 'tab_tournois', set : '{"champ":"titre","valeur":"'+$("#name").val()+'","type":"PARAM_STR"}', filtre : '{"champ":"id","valeur":"'+$.Oda.App.Controler.currentContest.id+'","type":"PARAM_INT"}'};
+                        var tabInput = { table : 'tab_tournois', set : {"champ":"titre","valeur":$("#name").val(),"type":"PARAM_STR"}, filtre : {"champ":"id","valeur":$.Oda.App.Controler.currentContest.id,"type":"PARAM_INT"}};
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/setter.php", {functionRetour: function(response){
                             $.Oda.Display.Notification.success("Mise &agrave; jour r&eacute;ussi.");
                         }}, tabInput);
