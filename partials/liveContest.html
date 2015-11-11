@@ -8,158 +8,150 @@
         <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_rules',args:{}});" role="tab" oda-label="detailsContest.rules">detailsContest.rules</a></li>
         <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'chargesContest',args:{}});" role="tab" oda-label="chargesContest.title">chargesContest.title</a></li>
     </ul>
-    <div class="row">
-        <div class="col-md-12">
-            <div id="table">
-                <div class="oda-grid-row">
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content"></div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content" id="set4">&nbsp;</div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content" id="set5">&nbsp;</div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content" id="set6">&nbsp;</div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content" id="set7">&nbsp;</div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content"></div>
-                    </div>
-                </div>
-                <div class="oda-grid-row">
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content" id="set3">&nbsp;</div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content"></div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content">
-                            <div class="panel panel-default" style="width: 95%">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title"><span id="nameContest"></span></h3>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-default" title="start" onclick="$.Oda.App.Controler.LiveContest.changeDisplay()"><span class="glyphicon glyphicon-resize-full" aria-hidden="true" id="display"></span></button>
-                                        <button type="button" class="btn btn-default" title="start" onclick="$.Oda.App.Controler.LiveContest.actionDecompte('start')" id="start"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
-                                        <button type="button" class="btn btn-default" title="pause" onclick="$.Oda.App.Controler.LiveContest.actionDecompte('pause')" id="pause"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span></button>
-                                        <button type="button" class="btn btn-default" title="stop" onclick="$.Oda.App.Controler.LiveContest.actionDecompte('stop')" id="stop"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></button>
-                                    </div>
-                                </div>
+    <div id="table">
+        <div class="oda-grid-row">
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content"></div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content" id="set4">&nbsp;</div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content" id="set5">&nbsp;</div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content" id="set6">&nbsp;</div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content" id="set7">&nbsp;</div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content"></div>
+            </div>
+        </div>
+        <div class="oda-grid-row">
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content" id="set3">&nbsp;</div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content"></div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content">
+                    <div class="panel panel-default" style="width: 95%">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><span id="nameContest"></span></h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-default" title="start" onclick="$.Oda.App.Controler.LiveContest.changeDisplay()"><span class="glyphicon glyphicon-resize-full" aria-hidden="true" id="display"></span></button>
+                                <button type="button" class="btn btn-default" title="start" onclick="$.Oda.App.Controler.LiveContest.actionDecompte('start')" id="start"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
+                                <button type="button" class="btn btn-default" title="pause" onclick="$.Oda.App.Controler.LiveContest.actionDecompte('pause')" id="pause"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span></button>
+                                <button type="button" class="btn btn-default" title="stop" onclick="$.Oda.App.Controler.LiveContest.actionDecompte('stop')" id="stop"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></button>
                             </div>
                         </div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content">
-                            <div class="panel panel-default" style="width: 95%">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">Round infos</h3>
-                                </div>
-                                <div class="panel-body">
-                                    <span id="round"></span>&nbsp;<span id="roundTime"></span><br>
-                                    <span id="small"></span>&nbsp;<span id="big"></span>&nbsp;<span id="ante"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content"></div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content" id="set8">&nbsp;</div>
-                    </div>
-                </div>
-                <div class="oda-grid-row">
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content"></div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content" id="set2">&nbsp;</div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content" id="set1">&nbsp;</div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content" id="set10">&nbsp;</div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content" id="set9">&nbsp;</div>
-                    </div>
-                    <div class="oda-grid-cell">
-                        <div class="oda-grid-cell-content"></div>
                     </div>
                 </div>
             </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content">
+                    <div class="panel panel-default" style="width: 95%">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Round infos</h3>
+                        </div>
+                        <div class="panel-body">
+                            <span id="round"></span>&nbsp;<span id="roundTime"></span><br>
+                            <span id="small"></span>&nbsp;<span id="big"></span>&nbsp;<span id="ante"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content"></div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content" id="set8">&nbsp;</div>
+            </div>
+        </div>
+        <div class="oda-grid-row">
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content"></div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content" id="set2">&nbsp;</div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content" id="set1">&nbsp;</div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content" id="set10">&nbsp;</div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content" id="set9">&nbsp;</div>
+            </div>
+            <div class="oda-grid-cell">
+                <div class="oda-grid-cell-content"></div>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12" id="stats" style="text-align: center;">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>
-                        <label oda-label="liveContest.labelTM">labelTM</label>
-                    </th>
-                    <th>
-                        <label oda-label="liveContest.labelNbtapis">labelNbtapis</label>
-                    </th>
-                    <th>
-                        <label oda-label="liveContest.label50">label50</label>
-                    </th>
-                    <th>
-                        <label oda-label="liveContest.label30">label30</label>
-                    </th>
-                    <th>
-                        <label oda-label="liveContest.label20">label20</label>
-                    </th>
-                    <th>
-                        <label oda-label="liveContest.labelStartDate">labelStartDate</label>
-                    </th>
-                    <th>
-                        <label oda-label="liveContest.labelDate">labelDate</label>
-                    </th>
-                    <th>
-                        <label oda-label="liveContest.labelEndDate">labelEndDate</label>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <span id="tm"></span>
-                        </td>
-                        <td>
-                            <span id="nbTapis"></span>
-                        </td>
-                        <td>
-                            <span id="50"></span>
-                        </td>
-                        <td>
-                            <span id="30"></span>
-                        </td>
-                        <td>
-                            <span id="20"></span>
-                        </td>
-                        <td>
-                            <span id="startDate"></span>
-                        </td>
-                        <td>
-                            <span id="date"></span>
-                        </td>
-                        <td>
-                            <span id="endDate"></span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>
+                <label oda-label="liveContest.labelTM">labelTM</label>
+            </th>
+            <th>
+                <label oda-label="liveContest.labelNbtapis">labelNbtapis</label>
+            </th>
+            <th>
+                <label oda-label="liveContest.label50">label50</label>
+            </th>
+            <th>
+                <label oda-label="liveContest.label30">label30</label>
+            </th>
+            <th>
+                <label oda-label="liveContest.label20">label20</label>
+            </th>
+            <th>
+                <label oda-label="liveContest.labelStartDate">labelStartDate</label>
+            </th>
+            <th>
+                <label oda-label="liveContest.labelDate">labelDate</label>
+            </th>
+            <th>
+                <label oda-label="liveContest.labelEndDate">labelEndDate</label>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <span id="tm"></span>
+            </td>
+            <td>
+                <span id="nbTapis"></span>
+            </td>
+            <td>
+                <span id="50"></span>
+            </td>
+            <td>
+                <span id="30"></span>
+            </td>
+            <td>
+                <span id="20"></span>
+            </td>
+            <td>
+                <span id="startDate"></span>
+            </td>
+            <td>
+                <span id="date"></span>
+            </td>
+            <td>
+                <span id="endDate"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
 <script>
@@ -181,7 +173,7 @@
 <style>
 #table {
     height: 530px;
-    width: 960px;
+    width: 965px;
     background: url(img/Table-final.png) no-repeat center;
     background-size: 960px 530px;
     -webkit-background-size: cover;

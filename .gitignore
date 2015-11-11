@@ -6,3 +6,6 @@ server/include/config.php
 /node_modules/*
 /.idea
 /.idea/*
+/server/vendor/
+/server/vendor/*
+server/composer.lock

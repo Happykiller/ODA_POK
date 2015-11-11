@@ -731,7 +731,7 @@
                                     template : "templatePlayer"
                                     , scope : {
                                         disable : strDisable,
-                                        name : dataRetour[indice].prenom + "." + dataRetour[indice].nom.substring(0, 1),
+                                        name : dataRetour[indice].prenom.substring(0, 10) + "." + dataRetour[indice].nom.substring(0, 1),
                                         nbTapis : dataRetour[indice].nb_tapis,
                                         idTournois : $.Oda.App.Controler.currentContest.id,
                                         userId : dataRetour[indice].id_user,
@@ -858,7 +858,7 @@
                             $('#20').html(int20+'&euro;');
                             $('#startDate').html(strDateDebut);
                             $('#endDate').html(strDateFin);
-                            $('#nameContest').html(strTitre);
+                            $('#nameContest').html(strTitre.substr(0,15));
                         }}, tabInput);
                         return this;
                     } catch (er) {
