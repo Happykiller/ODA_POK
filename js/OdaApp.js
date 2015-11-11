@@ -1158,10 +1158,10 @@
                                 var strHtml = $.Oda.Display.TemplateHtml.create({
                                     template : "templateGrid"
                                     , scope : {
-                                        elt1 : (listContent[i] !== undefined)?listContent[i]:"",
-                                        elt2 : (listContent[i+1] !== undefined)?listContent[i+1]:"",
-                                        elt3 : (listContent[i+2] !== undefined)?listContent[i+2]:"",
-                                        elt4 : (listContent[i+3] !== undefined)?listContent[i+3]:""
+                                        elt1 : (listContent[(i*4)] !== undefined)?listContent[(i*4)]:"",
+                                        elt2 : (listContent[(i*4)+1] !== undefined)?listContent[(i*4)+1]:"",
+                                        elt3 : (listContent[(i*4)+2] !== undefined)?listContent[(i*4)+2]:"",
+                                        elt4 : (listContent[(i*4)+3] !== undefined)?listContent[(i*4)+3]:""
                                     }
                                 });
                                 strPostIts += strHtml;
