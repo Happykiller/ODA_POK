@@ -147,7 +147,7 @@
                                     },
                                     {
                                         "mRender": function ( data, type, row ) {
-                                            return '<a href="javascript:$.Oda.Router.navigateTo({\'route\':\'tournoi_param\',args:{\'id\':'+row[objDataTable.entete["id"]]+'}});">'+row[objDataTable.entete["titre"]]+'</a>';
+                                            return '<a onclick="$.Oda.Router.navigateTo({\'route\':\'tournoi_param\',args:{\'id\':'+row[objDataTable.entete["id"]]+'}});">'+row[objDataTable.entete["titre"]]+'</a>';
                                         },
                                         "aTargets": [ 1 ]
                                     },
@@ -214,7 +214,7 @@
                                     },
                                     {
                                         "mRender": function ( data, type, row ) {
-                                            return '<a href="javascript:$.Oda.Router.navigateTo({\'route\':\'tournoi_param\',args:{\'id\':'+row[objDataTable.entete["id"]]+'}});">'+row[objDataTable.entete["titre"]]+'</a>';
+                                            return '<a onclick="$.Oda.Router.navigateTo({\'route\':\'tournoi_param\',args:{\'id\':'+row[objDataTable.entete["id"]]+'}});">'+row[objDataTable.entete["titre"]]+'</a>';
                                         },
                                         "aTargets": [ 1 ]
                                     },
@@ -1100,7 +1100,7 @@
                             contestCharges.totalExpenditure = 0;
                             $.each(contestCharges, function( index, contestCharge ) {
                                 var strPart = "";
-                                strPart += '<a href="javascript:$.Oda.App.Controler.ChargesContest.editPart({ id : '+ contestCharge.id +', value : '+contestCharge.part+', author : \''+(contestCharge.prenom + "." + contestCharge.nom.substring(0,1))+'\' });"><span class="glyphicon glyphicon-pencil"></span></a>';
+                                strPart += '<a onclick="$.Oda.App.Controler.ChargesContest.editPart({ id : '+ contestCharge.id +', value : '+contestCharge.part+', author : \''+(contestCharge.prenom + "." + contestCharge.nom.substring(0,1))+'\' });"><span class="glyphicon glyphicon-pencil"></span></a>';
                                 strPart += contestCharge.part;
 
                                 var strExpenditure = "";
@@ -1108,7 +1108,7 @@
                                 $.each(contestCharge.expenditure, function( index, value ) {
                                     contestCharges.totalExpenditure += parseFloat(value.expenditure);
                                     contestCharge.totalExpenditure += parseFloat(value.expenditure);
-                                    strExpenditure += '<a href="javascript:$.Oda.App.Controler.ChargesContest.editCharge({ id : '+ value.id +', cmt : \''+value.cmt+'\', value : '+value.expenditure+', type : \'expenditure\', author : \''+(contestCharge.prenom + "." + contestCharge.nom.substring(0,1))+'\' });"><span class="glyphicon glyphicon-pencil"></span></a>' + value.expenditure + "&euro; : " + value.cmt + "<br>";
+                                    strExpenditure += '<a onclick="$.Oda.App.Controler.ChargesContest.editCharge({ id : '+ value.id +', cmt : \''+value.cmt+'\', value : '+value.expenditure+', type : \'expenditure\', author : \''+(contestCharge.prenom + "." + contestCharge.nom.substring(0,1))+'\' });"><span class="glyphicon glyphicon-pencil"></span></a>' + value.expenditure + "&euro; : " + value.cmt + "<br>";
                                 });
                                 if(strExpenditure.length>0){
                                     var str = "";
@@ -1121,7 +1121,7 @@
                                 contestCharge.totalProfit = 0;
                                 $.each(contestCharge.profit, function( index, value ) {
                                     contestCharge.totalProfit += parseFloat(value.profit);
-                                    strProfit += '<a href="javascript:$.Oda.App.Controler.ChargesContest.editCharge({ id : '+ value.id +', cmt : \''+value.cmt+'\', value : '+value.profit+', type : \'profit\', author : \''+(contestCharge.prenom + "." + contestCharge.nom.substring(0,1))+'\' });"><span class="glyphicon glyphicon-pencil"></span></a>' + value.profit + "&euro; : " + value.cmt + "<br>";
+                                    strProfit += '<a onclick="$.Oda.App.Controler.ChargesContest.editCharge({ id : '+ value.id +', cmt : \''+value.cmt+'\', value : '+value.profit+', type : \'profit\', author : \''+(contestCharge.prenom + "." + contestCharge.nom.substring(0,1))+'\' });"><span class="glyphicon glyphicon-pencil"></span></a>' + value.profit + "&euro; : " + value.cmt + "<br>";
                                 });
 
                                 if(strProfit.length>0){
