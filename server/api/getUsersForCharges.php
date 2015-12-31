@@ -3,7 +3,7 @@ namespace Pok;
 
 require '../header.php';
 require '../vendor/autoload.php';
-require '../include/config.php';
+require '../config/config.php';
 
 use \stdClass, \Oda\SimpleObject\OdaPrepareInterface, \Oda\SimpleObject\OdaPrepareReqSql, \Oda\OdaLibBd;
 
@@ -14,7 +14,7 @@ $params->arrayInput = array("idContest");
 $INTERFACE = new PokInterface($params);
 
 //--------------------------------------------------------------------------
-// phpsql/getUsersForCharges.php?idContest=10
+// api/getUsersForCharges.php?idContest=10
 
 //--------------------------------------------------------------------------
 $params = new OdaPrepareReqSql();

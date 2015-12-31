@@ -3,31 +3,36 @@ namespace Pok;
 
 require '../header.php';
 require '../vendor/autoload.php';
-require '../include/config.php';
+require '../config/config.php';
 
 use \stdClass, \Oda\SimpleObject\OdaPrepareInterface, \Oda\SimpleObject\OdaPrepareReqSql, \Oda\OdaLibBd;
 
 //--------------------------------------------------------------------------
 //Build the interface
 $params = new OdaPrepareInterface();
-$params->arrayInput = array("idCharge");
+$params->arrayInput = array("id_tournoi","id_user");
 $INTERFACE = new PokInterface($params);
 
 //--------------------------------------------------------------------------
-// phpsql/delCharge.php?idCharge=1
+// api/inParticipant.php?milis=123450&ctrl=ok&id_user=1&id_tournoi=1
 
 //--------------------------------------------------------------------------
-
 $params = new OdaPrepareReqSql();
-$params->sql = "DELETE FROM `tab_contest_charges_details` WHERE 1=1 AND  `id` = :idCharge
+$params->sql = "UPDATE `tab_participants`
+     SET `fin` = '0000-00-00 00:00:00',
+     `roundFin` = '0'
+     WHERE 1=1
+     AND `id_tournoi` = :id_tournoi
+     AND `id` = :id_user
 ;";
-$params->bindsValue = [
-    "idCharge" => $INTERFACE->inputs["idCharge"]
-];
 $params->typeSQL = OdaLibBd::SQL_SCRIPT;
+$params->bindsValue = [
+    "id_tournoi" => $INTERFACE->inputs["id_tournoi"]
+     , "id_user" => $INTERFACE->inputs["id_user"]
+];
 $retour = $INTERFACE->BD_ENGINE->reqODASQL($params);
 
 $params = new stdClass();
 $params->label = "resultat";
-$params->value = $retour->data;
+$params->value = $retour->nombre;
 $INTERFACE->addDataStr($params);

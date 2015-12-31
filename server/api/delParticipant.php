@@ -3,33 +3,36 @@ namespace Pok;
 
 require '../header.php';
 require '../vendor/autoload.php';
-require '../include/config.php';
+require '../config/config.php';
 
 use \stdClass, \Oda\SimpleObject\OdaPrepareInterface, \Oda\SimpleObject\OdaPrepareReqSql, \Oda\OdaLibBd;
 
 //--------------------------------------------------------------------------
 //Build the interface
 $params = new OdaPrepareInterface();
-$params->arrayInput = array("idContestCharges", "type", "cmt", "amount");
+$params->arrayInput = array("id_user","id_tournoi");
 $INTERFACE = new PokInterface($params);
 
 //--------------------------------------------------------------------------
-// phpsql/addUserForCharges.php?idUser=1&idContest=10
+// api/delParticipant.php?milis=123450&ctrl=ok&id_user=1&id_tournoi=1
 
 //--------------------------------------------------------------------------
-
 $params = new OdaPrepareReqSql();
-$params->sql = "INSERT INTO `tab_contest_charges_details` (`idContestCharges`, `cmt`, `".$INTERFACE->inputs["type"]."`) VALUES (:idContestCharges, :cmt, :amount)
+$params->sql = "DELETE FROM `tab_participants`
+     WHERE 1=1
+     AND `id_tournoi` = ".$INTERFACE->inputs["id_tournoi"]."
+     AND `id_user` = ".$INTERFACE->inputs["id_user"]."
+;
+
+DELETE FROM `tab_participants_tapis`
+     WHERE 1=1
+     AND `id_tournoi` = ".$INTERFACE->inputs["id_tournoi"]."
+     AND `id_user` = ".$INTERFACE->inputs["id_user"]."
 ;";
-$params->bindsValue = [
-    "idContestCharges" => $INTERFACE->inputs["idContestCharges"],
-    "cmt" => $INTERFACE->inputs["cmt"],
-    "amount" => $INTERFACE->inputs["amount"]
-];
-$params->typeSQL = OdaLibBd::SQL_INSERT_ONE;
+$params->typeSQL = OdaLibBd::SQL_SCRIPT;
 $retour = $INTERFACE->BD_ENGINE->reqODASQL($params);
 
 $params = new stdClass();
-$params->label = "resultat_insert";
+$params->label = "resultat";
 $params->value = $retour->data;
 $INTERFACE->addDataStr($params);
