@@ -319,11 +319,9 @@
 
                         $("#numContest").html("n&deg;"+ $.Oda.App.Controler.currentContest.id);
 
-                        var tabInput = { table : 'tab_tournois', get : {"champ":"titre","type":"PARAM_STR"}, filtre : {"champ":"id","valeur":$.Oda.App.Controler.currentContest.id,"type":"PARAM_INT"}};
-
-                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/api/getter.php", {functionRetour: function(response){
+                        $.Oda.Interface.callRest($.Oda.Context.rest+"/api/rest/tournament/"+$.Oda.App.Controler.currentContest.id, {callback: function(response){
                             $("#name").val(response.data.resultat.champ);
-                        }}, tabInput);
+                        }});
 
                         $.Oda.Scope.Gardian.add({
                             id : "gardianUpdataParamContest",
