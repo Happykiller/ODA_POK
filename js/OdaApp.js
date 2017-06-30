@@ -320,7 +320,7 @@
                         $("#numContest").html("n&deg;"+ $.Oda.App.Controler.currentContest.id);
 
                         $.Oda.Interface.callRest($.Oda.Context.rest+"api/rest/tournament/"+$.Oda.App.Controler.currentContest.id, {callback: function(response){
-                            $("#name").val(response.data.resultat.champ);
+                            $("#name").val(response.data.titre);
                         }});
 
                         $.Oda.Scope.Gardian.add({
