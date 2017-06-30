@@ -1110,7 +1110,7 @@
                                 });
                                 if(strExpenditure.length>0){
                                     var str = "";
-                                    str += '<li oda-label="chargesContest.expenditure">chargesContest.expenditure"</li>';
+                                    str += '<li><oda-label oda-label-value="chargesContest.expenditure"/></li>';
                                     str += strExpenditure;
                                     strExpenditure = str;
                                 }
@@ -1124,7 +1124,7 @@
 
                                 if(strProfit.length>0){
                                     var str = "";
-                                    str += '<li oda-label="chargesContest.profit">chargesContest.profit"</li>';
+                                    str += '<li><oda-label oda-label-value="chargesContest.profit"/></li>';
                                     str += strProfit;
                                     strProfit = str;
                                 }
@@ -1134,7 +1134,7 @@
                                 if(contestCharge.loose !== 0){
                                     strLoose += contestCharge.loose+'&euro;';
                                 }
-                                strLoose = (strLoose.length>0)?'<li oda-label="chargesContest.loose">chargesContest.loose"</li>'+strLoose:"";
+                                strLoose = (strLoose.length>0)?'<li><oda-label oda-label-value="chargesContest.loose"/></li>'+strLoose:"";
 
                                 var strHtml = $.Oda.Display.TemplateHtml.create({
                                     template : "templatePostIt"
@@ -1271,7 +1271,7 @@
                             "name" : "popAddCharges",
                             "label" : $.Oda.I8n.get('chargesContest','addCharges') + " " + p_params.author,
                             "details" : strHtml,
-                            "footer" : '<button type="button" oda-label="oda-main.bt-submit" oda-submit="submit" onclick="$.Oda.App.Controler.ChargesContest.submitCharges({id:'+p_params.id+'});" class="btn btn-primary disabled" disabled>Submit</button >',
+                            "footer" : '<oda-btn oda-btn-name="submit" oda-btn-style="primary" oda-btn-click="$.Oda.Controller.Auth.submitCharges({id:'+p_params.id+'});" disabled>oda-main.bt-submit</oda-btn>',
                             "callback" : function(){
                                 $.Oda.Scope.Gardian.add({
                                     id : "addCharges",
@@ -1352,7 +1352,7 @@
                             "name" : "popEditPart",
                             "label" : $.Oda.I8n.get('chargesContest','part') + ", " + p_params.author,
                             "details" : strHtml,
-                            "footer" : '<button type="button" oda-label="oda-main.bt-submit" oda-submit="submit" onclick="$.Oda.App.Controler.ChargesContest.submitEditPart({id:'+p_params.id+'});" class="btn btn-primary disabled" disabled>Submit</button >',
+                            "footer": '<oda-btn oda-btn-name="submit" oda-btn-style="primary" oda-btn-click="$.Oda.Controller.Auth.submitEditPart({id:'+p_params.id+'});" disabled>oda-main.bt-submit</oda-btn>',
                             "callback" : function(){
                                 $.Oda.Scope.Gardian.add({
                                     id : "gEditPart",
@@ -1425,7 +1425,7 @@
                             "name" : "popEditCharge",
                             "label" : $.Oda.I8n.get('chargesContest',p_params.type) + ", " + p_params.author,
                             "details" : strHtml,
-                            "footer" : '<button type="button" oda-label="oda-main.bt-delete" onclick="$.Oda.App.Controler.ChargesContest.submitDelCharge({id:'+p_params.id+'});" class="btn btn-danger">delete</button ><button type="button" oda-label="oda-main.bt-submit" oda-submit="submit" onclick="$.Oda.App.Controler.ChargesContest.submitEditCharge({id:'+p_params.id+', type : \''+p_params.type+'\'});" class="btn btn-primary disabled" disabled>Submit</button >',
+                            "footer": '<oda-btn oda-btn-name="submit-delete" oda-btn-style="danger" oda-btn-click="$.Oda.App.Controler.ChargesContest.submitDelCharge({id:'+p_params.id+'});">oda-main.bt-delete</oda-btn><oda-btn oda-btn-name="submit" oda-btn-style="primary" oda-btn-click="$.Oda.App.Controler.ChargesContest.submitEditCharge({id:'+p_params.id+', type : \''+p_params.type+'\'});" disabled>oda-main.bt-submit</oda-btn>',
                             "callback" : function(){
                                 $.Oda.Scope.Gardian.add({
                                     id : "gEditCharge",

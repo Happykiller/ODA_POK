@@ -1,10 +1,10 @@
 <div class="container">
-    <h2 oda-label="detailsContest.histo" id="title">detailsContest.histo</h2>
+    <h2><oda-label oda-label-value="detailsContest.histo"/></h2>
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist" id="menu-tabs">
         <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_param',args:{}});" role="tab" oda-label="detailsContest.details">detailsContest.details</a></li>
         <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_live',args:{}});" role="tab" oda-label="detailsContest.live">detailsContest.live</a></li>
-        <li role="presentation" class="active"><a href="" role="tab" oda-label="detailsContest.histo">detailsContest.histo</a></li>
+        <li role="presentation" class="active"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_histo',args:{}});" role="tab"><oda-label oda-label-value="detailsContest.histo"/></a></li>
         <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'tournoi_rules',args:{}});" role="tab" oda-label="detailsContest.rules">detailsContest.rules</a></li>
         <li role="presentation"><a href="javascript:$.Oda.Router.navigateTo({'route':'chargesContest',args:{}});" role="tab" oda-label="chargesContest.title">chargesContest.title</a></li>
     </ul>
@@ -15,19 +15,20 @@
                     <thead>
                     <tr>
                         <th>
-                            <label oda-label="histoContest.place">place</label>
+                            <oda-label oda-label-value="histoContest.place"/>
                         </th>
                         <th>
+                            <oda-label oda-label-value="histoContest.firstName"/>
                             <label oda-label="histoContest.firstName">firstName</label>
                         </th>
                         <th>
-                            <label oda-label="histoContest.lastName">lastName</label>
+                            <oda-label oda-label-value="histoContest.lastName"/>
                         </th>
                         <th>
-                            <label oda-label="histoContest.end">end</label>
+                            <oda-label oda-label-value="histoContest.end"/>
                         </th>
                         <th>
-                            <label oda-label="histoContest.endRound">endRound</label>
+                            <oda-label oda-label-value="histoContest.endRound"/>
                         </th>
                     </tr>
                     </thead>
