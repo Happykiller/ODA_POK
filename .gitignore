@@ -18,4 +18,4 @@ server/vendor/*
 server/resources/
 server/resources/*
 *.iml
-composer-lock.json
+composer.lock
